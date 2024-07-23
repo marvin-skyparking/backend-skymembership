@@ -8,6 +8,7 @@ export interface UserAttributes {
     username: string;
     password: string;
     address?: string;
+    pin?: string; // Optional PIN field
     email: string;
     phoneNumber: string;
 }
@@ -32,7 +33,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
     public address!: string;
     public email!: string;
     public phoneNumber!: string;
-
+    public pin?: string; // Optional PIN field
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -59,6 +60,10 @@ User.init({
     address: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    pin: {
+        type: DataTypes.STRING,
+        allowNull: true
     },
     email: {
         type: DataTypes.STRING,

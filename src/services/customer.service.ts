@@ -82,3 +82,14 @@ export async function findUser(options: Partial<UserAttributes>): Promise<User |
         throw new Error('Failed to find user');
     }
 }
+
+
+export async function addPin(userId: string, pin: string): Promise<User | null> {
+    const user = await User.findByPk(userId);
+    if (user) {
+      user.pin = pin;
+      await user.save();
+      return user;
+    }
+    return null;
+  }

@@ -40,6 +40,7 @@ export async function login(req: Request, res: Response): Promise<any> {
             user: {
                 id: user.id,
                 username: user.username,
+                phoneNumber: user.phoneNumber
             },
         });
     } catch (error:any) {

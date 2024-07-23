@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser } from '../controllers/customer.controller';
+import { registerUser,addPins,BuyProducts } from '../controllers/customer.controller';
 
 const customerRouter = express.Router();
 
@@ -57,5 +57,7 @@ const customerRouter = express.Router();
  *         description: Failed to register user
  */
 customerRouter.post('/registerMember', registerUser);
+customerRouter.post('/addPins',addPins)
+customerRouter.post('/buyProducts',BuyProducts)
 
 export default customerRouter;

@@ -2,6 +2,11 @@ import { Request, Response } from 'express';
 import { generateStringToSigns, verifySymmetricSignature,signAsymmetricSignature, PaymentRequest, Headers, CreateVARequest } from '../ThirdParty/BayarINDPaymentGateway'
 import axios from 'axios';
 import moment from 'moment-timezone'; 
+import { createPayment } from '../services/payment.service';
+import { PaymentAttributes } from '../models/payment.model';
+import { Unauthorized } from '../utils/response/common.response';
+import jwtUtils from '../utils/jwt.utils';
+import { customLengthTrxId, generateRandomNumber } from '../utils/helper.utils';
 
 const getCurrentTimestamp = (): string => {
     return moment().tz('Asia/Jakarta').format('YYYY-MM-DDTHH:mm:ssZ');
@@ -10,9 +15,19 @@ const getCurrentTimestamp = (): string => {
 
 export async function createVirtualAccount(req: Request, res: Response): Promise<any> {
     try {
+
+        const authHeader = req.headers['authorization'];
+        const jwttoken = authHeader && authHeader.split(' ')[1];
+
+         // check apakah token itu ada
+        if (!jwttoken) return Unauthorized(res, 'Session telah berakhir');
+
+        const decoded = await jwtUtils.validateToken(jwttoken);
+       
         const { partnerServiceId, customerNo, virtualAccountNo, virtualAccountName, virtualAccountEmail,
             trxId, totalAmount, expiredDate, billDetails, additionalInfo } = req.body;
 
+        
         const timestamp = getCurrentTimestamp()
 
         const paddedPartnerServiceId = partnerServiceId.padStart(8, ' ');
@@ -22,9 +37,9 @@ export async function createVirtualAccount(req: Request, res: Response): Promise
             partnerServiceId:paddedPartnerServiceId,
             customerNo,
             virtualAccountNo:paddedVirtualAccountNo,
-            virtualAccountName,
-            virtualAccountEmail,
-            trxId,
+            virtualAccountName:decoded.username,
+            virtualAccountEmail:decoded.email,
+            trxId:customLengthTrxId,
             totalAmount,
             expiredDate,
             billDetails,
@@ -37,8 +52,8 @@ export async function createVirtualAccount(req: Request, res: Response): Promise
         const stringToSign = generateStringToSigns(httpMethod,endpoint,requestBody,timestamp)
         const signature = signAsymmetricSignature(stringToSign);
         const isSignatureValid = verifySymmetricSignature(signature, stringToSign);
-        
-        
+        const externalID = generateRandomNumber(20)
+ 
         
          if (!isSignatureValid) {
                 return res.status(400).json({ message: 'Invalid signature' });
@@ -49,16 +64,42 @@ export async function createVirtualAccount(req: Request, res: Response): Promise
             'X-TIMESTAMP':timestamp,
             'X-SIGNATURE':signature,
             'X-PARTNER-ID':'SKYPABVA01', // Replace with your partner ID
-            'X-EXTERNAL-ID':'202407151721013764423', // Replace with your external ID
+            'X-EXTERNAL-ID':externalID, // Replace with your external ID
             'CHANNEL-ID':'1021', // Replace with your channel ID
         };
 
         const response = await axios.post(`https://snaptest.bayarind.id/api/v1.0/transfer-va/create-va`, requestBody, {
             headers,
         });
+
+
+        const paymentData = response.data.virtualAccountData;
         
-        console.log(stringToSign)
-        res.status(response.status).json(response.data);
+        const formattedPaymentData: PaymentAttributes = {
+            price: paymentData.totalAmount.value, // Assuming price is a string
+            customerNo: paymentData.customerNo,
+            virtualAccountNo: paymentData.virtualAccountNo.trim(), // Remove extra spaces
+            name: paymentData.virtualAccountName,
+            username: paymentData.virtualAccountName,
+            signToString: signature || '', // Provide default values if necessary
+            xtimestamp: timestamp, // Provide default values if necessary
+            xexternalid: externalID || '', // Provide default values if necessary
+            AsymetricSignature: signature || '', // Provide default values if necessary
+            channelId: "1021" || '', // Provide default values if necessary
+            status_payment:'Pending', // Provide default values if necessary
+            //trxDateTime: paymentData.trxDateTime ? new Date(paymentData.trxDateTime) : null,
+            //flagAdvise: paymentData.flagAdvise || null,
+            //billDetails: paymentData.billDetails || null,
+            //additionalInfo: paymentData.additionalInfo || null,
+            //refernceNo: paymentData.refernceNo || null,
+            //tagID: paymentData.tagID || null,
+            //flagType: paymentData.flagType || null,
+        };
+        // Add any other required fields that exist in PaymentAttributes
+        const createdPayment = await createPayment(formattedPaymentData)
+        console.log(decoded)
+        res.status(200).json(paymentData);
+        
     } catch (error) {
         console.error('Error creating virtual account:', error);
         res.status(500).json({ error: 'Failed to create virtual account' });
