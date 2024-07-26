@@ -1,11 +1,13 @@
 {
   "name": "backend-skymembership",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/App.ts",
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "postinstall": "patch-package",
+    "build": "tsc && yarn copy-keys",
     "start": "node dist/server.js",
+    "copy-keys": "copyfiles -u 1 src/ThirdParty/*.pem src/ThirdParty/*.pub dist/",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "db:create": "sequelize db:create",
     "db:migrate": "sequelize db:migrate"
@@ -21,15 +23,19 @@
     "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "http": "^0.0.1-security",
     "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.3.1",
     "moment-timezone": "^0.5.45",
     "mysql2": "^3.10.3",
     "node-fetch": "^3.3.2",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "reflect-metadata": "^0.2.2",
     "sequelize": "^6.37.3",
     "sequelize-typescript": "^2.1.6",
+    "serverless": "^4.1.15",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "ts-node-dev": "^2.0.0",
@@ -44,6 +50,10 @@
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.6",
     "@types/uuid": "^10.0.0",
+    "copyfiles": "^2.4.1",
     "sequelize-cli": "^6.6.2"
+  },
+  "resolutions": {
+    "wrap-ansi": "5.1.0"
   }
 }

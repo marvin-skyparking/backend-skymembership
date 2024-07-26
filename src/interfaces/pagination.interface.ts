@@ -8,7 +8,7 @@ export interface IPaginateSkipTake {
   take: number;
 }
 
-export interface IPaginatePaylaod {
+export interface IPaginatePayload {
   page?: number;
   limit?: number;
   search?: string | any;
