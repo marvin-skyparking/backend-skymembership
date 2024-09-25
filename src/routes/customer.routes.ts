@@ -1,63 +1,21 @@
 import express from 'express';
-import { registerUser,addPins,BuyProducts } from '../controllers/customer.controller';
+import {
+  handleCreateMember,
+  handleFindMemberById,
+  handleFindMemberByUsernameOrEmail,
+  handleUpdateMember,
+  handleDeleteMember
+} from '../controllers/member_customer.controller';
 
-const customerRouter = express.Router();
+const member_customer = express.Router();
 
-/**
- * @swagger
- * /v1/customer/registerMember:
- *   post:
- *     summary: Register a new user
- *     description: Creates a new user with the provided details
- *     tags:
- *       - Users
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *               address:
- *                 type: string
- *               email:
- *                 type: string
- *               phoneNumber:
- *                 type: string
- *     responses:
- *       '201':
- *         description: User registered successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 user:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                     name:
- *                       type: string
- *                     email:
- *                       type: string
- *                     createdAt:
- *                       type: string
- *                     updatedAt:
- *                       type: string
- *       '500':
- *         description: Failed to register user
- */
-customerRouter.post('/registerMember', registerUser);
-customerRouter.post('/addPins',addPins)
-customerRouter.post('/buyProducts',BuyProducts)
+member_customer.post('/members', handleCreateMember);
+member_customer.get('/members/:id', handleFindMemberById);
+member_customer.get(
+  '/members/username-or-email/:usernameOrEmail',
+  handleFindMemberByUsernameOrEmail
+);
+member_customer.put('/members/:id', handleUpdateMember);
+member_customer.delete('/members/:id', handleDeleteMember);
 
-export default customerRouter;
+export default member_customer;

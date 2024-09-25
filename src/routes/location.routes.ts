@@ -1,11 +1,31 @@
-import express from 'express';
-import { createLocationHandler,getAllLocationsHandler } from '../controllers/location.controller';
-//import { authenticateToken } from '../middleware/auth.middleware';
+import { Router } from 'express';
+import * as locationAreaController from '../controllers/location_area.controller';
 
+const locationrouter = Router();
 
-const locationRouter = express.Router();
+locationrouter.post(
+  '/createLocation',
+  locationAreaController.createLocationArea
+);
+locationrouter.get(
+  '/getAllLocation',
+  locationAreaController.getAllLocationAreas
+);
+locationrouter.get(
+  '/getLocation/:id',
+  locationAreaController.getLocationAreaById
+);
+locationrouter.put(
+  '/updateLlocation/:id',
+  locationAreaController.updateLocationArea
+);
+locationrouter.delete(
+  '/deleteLocation/:id',
+  locationAreaController.deleteLocationArea
+);
+locationrouter.get(
+  '/getLocationCode/:location_code',
+  locationAreaController.getLocationAreaController
+);
 
-locationRouter.post('/create-location', createLocationHandler);
-locationRouter.get('/getallLocation', getAllLocationsHandler);
-
-export default locationRouter;
+export default locationrouter;

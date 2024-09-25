@@ -7,11 +7,11 @@ import {
   ServerError,
   Unauthorized
 } from '../utils/response/common.response';
-import User, { ILogin } from '../models/customer.model';
+import User, { ILogin } from '../models/member_customer.model';
 
 interface AuthenticatedRequest extends Request {
-    user?: ILogin;
-  }
+  user?: ILogin;
+}
 
 export async function authenticateToken(
   req: AuthenticatedRequest,
@@ -52,4 +52,3 @@ export const logout = (req: Request, res: Response) => {
     return BadRequest(res, 'Please Provide Token');
   }
 };
-

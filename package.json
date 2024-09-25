@@ -4,13 +4,24 @@
   "main": "src/App.ts",
   "license": "MIT",
   "scripts": {
-    "postinstall": "patch-package",
-    "build": "tsc && yarn copy-keys",
-    "start": "node dist/server.js",
-    "copy-keys": "copyfiles -u 1 src/ThirdParty/*.pem src/ThirdParty/*.pub dist/",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "db:create": "sequelize db:create",
-    "db:migrate": "sequelize db:migrate"
+    "test": "npx jest --passWithNoTests",
+    "lint": "npx eslint . --fix",
+    "lint:build": "npx eslint . --fix && yarn build ",
+    "prepare": "husky",
+    "build": "tsc && cp -r src/uploads dist/ && yarn copy-static-files",
+    "start": "yarn build && node dist/server.js",
+    "dev": "yarn prettier:format && ts-node-dev --respawn --transpile-only src/server.ts",
+    "migration:generate": "sequelize-cli migration:generate",
+    "migrate": "sequelize-cli db:migrate",
+    "migration:undo": "sequelize-cli db:migrate:undo",
+    "migration:undo:all": "sequelize-cli db:migrate:undo:all",
+    "prettier:format": "prettier --config .prettierrc src/**/*.ts --write",
+    "seed": "sequelize-cli db:seed: ll",
+    "seed:undo": "sequelize-cli db:seed:undo",
+    "copy-static-files": "copyfiles -u 1 ./src/uploads/**/*"
+  },
+  "lint-staged": {
+    "*.ts": "eslint --fix"
   },
   "dependencies": {
     "@sentry/node": "^7.54.0",
@@ -51,6 +62,10 @@
     "@types/swagger-ui-express": "^4.1.6",
     "@types/uuid": "^10.0.0",
     "copyfiles": "^2.4.1",
+    "eslint": "^9.9.1",
+    "eslint-plugin-react": "^7.35.0",
+    "husky": "^9.1.5",
+    "prettier": "^3.3.3",
     "sequelize-cli": "^6.6.2"
   },
   "resolutions": {

@@ -1,21 +1,14 @@
-import express from 'express'
-import customerRouter from './customer.routes'
+import express from 'express';
+import member_customer from './customer.routes';
 import authRouter from './auth.routes';
-import paymentRouter from './payment.routes';
-import productRouter from './memberProduct.routes';
-import partnerRouter from './partner.routes';
-import locationRouter from './location.routes';
-
+import locationrouter from './location.routes';
+import productRouter from './product.routes';
 
 const router = express.Router();
 
-
-router.use('/customer', customerRouter);
+router.use('/customer', member_customer);
 router.use('/auth', authRouter);
-router.use('/payment', paymentRouter);
-router.use('/product',productRouter);
-router.use('/partner',partnerRouter);
-router.use('/location',locationRouter);
+router.use('/location', locationrouter);
+router.use('/product', productRouter);
 
-
-export default router; 
+export default router;

@@ -5,14 +5,14 @@ const swaggerDefinition = {
   info: {
     title: 'SKY Membership',
     version: '1.0.0',
-    description: 'Description of your API',
-  },
+    description: 'Description of your API'
+  }
 };
 
 const options = {
   swaggerDefinition,
   // Path to the API routes
-  apis: ['./src/routes/*.ts'], // Adjust this based on your project structure
+  apis: ['./src/routes/*.ts'] // Adjust this based on your project structure
 };
 
 const swaggerSpec = swaggerJSDoc(options);

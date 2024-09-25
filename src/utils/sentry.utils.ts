@@ -5,7 +5,7 @@ const SENTRY_DSN = envConfig.SENTRY_URI; // Ensure SENTRY_URI is defined in your
 
 Sentry.init({
   dsn: SENTRY_DSN,
-  environment: process.env.NODE_ENV || 'development', // Optional: Set environment
+  environment: process.env.NODE_ENV || 'development' // Optional: Set environment
 });
 
 // Function to send errors to Sentry
@@ -16,5 +16,5 @@ const send = async (error: any) => {
 export default {
   send: send,
   errorHandler: Sentry.Handlers.errorHandler(),
-  requestHandler: Sentry.Handlers.requestHandler(),
+  requestHandler: Sentry.Handlers.requestHandler()
 };
