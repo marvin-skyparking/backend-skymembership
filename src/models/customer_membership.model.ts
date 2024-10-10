@@ -35,7 +35,7 @@ export class CustomerMembership
 {
   public id!: number;
   public cust_id!: number;
-  public rfid!: string;
+  public rfid?: string;
   public vehicle_type!: VehicleType;
   public member_customer_no!: string;
   public plate_number!: string;
