@@ -92,7 +92,7 @@ export async function Purchase_product_By_Points(req: Request, res: Response) {
       check_product_existence?.invoice_id ?? ''
     );
     if (
-      !check_product_existence?.is_active &&
+      check_product_existence?.is_active === false &&
       validate_expired_payment?.expired_date &&
       new Date(validate_expired_payment.expired_date) > new Date()
     ) {
@@ -100,7 +100,7 @@ export async function Purchase_product_By_Points(req: Request, res: Response) {
     }
 
     // Check if already registered
-    if (check_product_existence?.is_active)
+    if (check_product_existence?.is_active === true)
       return BadRequest(
         res,
         'Anda Sudah Terdaftar Silahkan Lakukan Perpanjangan'
@@ -122,6 +122,7 @@ export async function Purchase_product_By_Points(req: Request, res: Response) {
       location_id: check_product.location_code,
       invoice_id: add_invoice,
       kid: check_product.KID,
+      is_active: true,
       start_date: check_product.start_date,
       end_date: check_product.end_date
     });
