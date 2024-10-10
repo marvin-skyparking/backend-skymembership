@@ -10,4 +10,5 @@ export interface IEnvInterface {
   SENTRY_ENABLE: boolean;
   JWT_SECRET: string;
   BAYARIND_DEV_URL: string;
+  PAYMENT_SERVICE_URL: string;
 }

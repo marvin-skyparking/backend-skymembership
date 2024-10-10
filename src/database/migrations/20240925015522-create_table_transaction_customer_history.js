@@ -26,6 +26,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      expired_date: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       timestamp: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -47,7 +51,7 @@ module.exports = {
         allowNull: false,
       },
       transactionType: {
-        type: Sequelize.ENUM('E_WALLET', 'VIRTUAL_ACCOUNT', 'QRIS', 'PAYLATER', 'CREDIT_CARD', 'DEBIT_CARD'),
+        type: Sequelize.ENUM('E_WALLET', 'VIRTUAL_ACCOUNT', 'QRIS', 'PAYLATER', 'CREDIT_CARD', 'DEBIT_CARD','POINT'),
         allowNull: false,
       },
       createdAt: {

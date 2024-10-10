@@ -1,16 +1,30 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../configs/database'; // Adjust the path
 
-interface CustomerMembershipAttributes {
-  id: number;
+export enum VehicleType {
+  MOTOR = 'MOTOR',
+  MOBIL = 'MOBIL'
+}
+
+export interface CustomerMembershipAttributes {
+  id?: number;
   cust_id: number;
+  vehicle_type: VehicleType;
   member_customer_no: string;
-  rfid: string;
   plate_number: string;
   plate_number_image: string;
   stnk_image: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface CustomerMembershipCreation {
+  cust_id: number;
+  vehicle_type: VehicleType;
+  member_customer_no: string;
+  plate_number: string;
+  plate_number_image: string;
+  stnk_image: string;
 }
 
 export class CustomerMembership
@@ -19,8 +33,8 @@ export class CustomerMembership
 {
   public id!: number;
   public cust_id!: number;
+  public vehicle_type!: VehicleType;
   public member_customer_no!: string;
-  public rfid!: string;
   public plate_number!: string;
   public plate_number_image!: string;
   public stnk_image!: string;
@@ -41,11 +55,10 @@ CustomerMembership.init(
       allowNull: false,
       references: { model: 'member_customer', key: 'id' } // Foreign Key Reference
     },
-    member_customer_no: {
-      type: DataTypes.STRING,
-      allowNull: false
+    vehicle_type: {
+      type: DataTypes.ENUM('MOTOR', 'MOBIL')
     },
-    rfid: {
+    member_customer_no: {
       type: DataTypes.STRING,
       allowNull: false
     },

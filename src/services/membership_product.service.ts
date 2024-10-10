@@ -14,11 +14,9 @@ export async function createMembershipProduct(data: any) {
 export async function getMembershipProductById(id: number) {
   try {
     const membershipProduct = await MembershipProduct.findByPk(id);
-    if (!membershipProduct) {
-      throw new Error('Membership product not found');
-    }
+
     return membershipProduct;
-  } catch (error) {
+  } catch (error: any) {
     throw new Error('Error retrieving membership product');
   }
 }

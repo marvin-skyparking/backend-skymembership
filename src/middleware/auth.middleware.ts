@@ -8,6 +8,7 @@ import {
   Unauthorized
 } from '../utils/response/common.response';
 import User, { ILogin } from '../models/member_customer.model';
+import { removeUploadedFiles } from './multer';
 
 interface AuthenticatedRequest extends Request {
   user?: ILogin;
@@ -52,3 +53,30 @@ export const logout = (req: Request, res: Response) => {
     return BadRequest(res, 'Please Provide Token');
   }
 };
+
+export async function validateUserToken(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+      return ServerError(req, res, 'Authorization token missing.');
+    }
+
+    const user = await jwtUtils.validateToken(token);
+
+    if (!user) {
+      return ServerError(req, res, 'Invalid token or user not found.');
+    }
+
+    req.user = user; // Attach the user object to the request
+
+    next();
+  } catch (err) {
+    return ServerError(req, res, 'Token validation failed.');
+  }
+}

@@ -1,23 +1,23 @@
-FROM node:20.11-alpine
+# Use the official Node.js image as the base image
+FROM node:20.11
 
-# setup work directory in container
-WORKDIR /home/node/app
+# Create and set the working directory for the application
+WORKDIR /app
 
-# copy file into work directory
-COPY . /home/node/app
+# Copy package.json and package-lock.json (or yarn.lock) to the container
+COPY package*.json ./
 
-# make owner user node
-RUN chown -R node:node /home/node
+# Install application dependencies
+RUN yarn install
 
-# set user node
-USER node
+# Copy the rest of the application source code
+COPY . .
 
-# install dependency packages
-RUN cd /home/node/app && npm ci && \
-  # build code, kebentuk dist
-  npm run build
+# Build the TypeScript code
+RUN yarn build
 
-# optional: expose port
+# Expose the port the app runs on
 EXPOSE 9000
 
-CMD [ "yarn","start"]
+# Specify the command to run the application
+CMD ["yarn", "start"]

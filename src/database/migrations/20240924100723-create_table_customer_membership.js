@@ -9,15 +9,16 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
       },
+      vehicle_type:{
+        type: Sequelize.ENUM('MOTOR','MOBIL')
+      },
       cust_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'Member_Customer', // Ensure this matches the table name exactly
           key: 'id', // Ensure this matches the column name exactly
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
+        }
       },
       member_customer_no: {
         type: Sequelize.STRING,

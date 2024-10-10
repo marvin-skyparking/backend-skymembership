@@ -16,12 +16,6 @@ module.exports = {
           model: 'customer_membership', // Make sure this matches the table name exactly
           key: 'id', // Ensure this matches the column name exactly
         },
-        onDelete: 'CASCADE', // Optional: handles cascading deletes
-        onUpdate: 'CASCADE', // Optional: handles cascading updates
-      },
-      rfid: {
-        type: Sequelize.STRING,
-        allowNull: false,
       },
       location_id: {
         type: Sequelize.STRING,

@@ -78,3 +78,24 @@ export const endMonth = getEndOfMonth();
 export function generateRandomFiveDigit() {
   return Math.floor(10000 + Math.random() * 90000).toString(); // Ensure it is a string
 }
+
+export function generateRandomNumberFromPlate(plateNumber: string): string {
+  // Extract numeric part from the plate number
+  const numericPart = plateNumber.replace(/\D/g, ''); // Remove non-digit characters
+  const maxLength = 11;
+
+  // Calculate remaining length for random digits
+  const remainingLength = maxLength - numericPart.length;
+
+  if (remainingLength <= 0) {
+    throw new Error('Plate number exceeds maximum length of 11 digits');
+  }
+
+  // Generate a random number of the required length
+  const randomPart = Math.floor(Math.random() * Math.pow(10, remainingLength))
+    .toString()
+    .padStart(remainingLength, '0');
+
+  // Combine numeric part and random part
+  return numericPart + randomPart;
+}

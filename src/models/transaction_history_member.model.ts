@@ -8,7 +8,29 @@ type TypePayment =
   | 'QRIS'
   | 'PAYLATER'
   | 'CREDIT_CARD'
-  | 'DEBIT_CARD';
+  | 'DEBIT_CARD'
+  | 'POINT';
+
+export enum Type_Payment {
+  E_WALLET = 'E_WALLET',
+  VIRTUAL_ACCOUNT = 'VIRTUAL_ACCOUNT',
+  QRIS = 'QRIS',
+  PAYLATER = 'PAYLATER',
+  CREDIT_CARD = 'CREDIT_CARD',
+  DEBIT_CARD = 'DEBIT_CARD',
+  POINT = 'POINT'
+}
+
+export enum purchase_types {
+  MEMBERSHIP = 'MEMBERSHIP',
+  TOPUP = 'TOPUP'
+}
+
+export enum StatusTransaction {
+  PENDING = 'PENDING',
+  FAILED = 'FAILED',
+  PAID = 'PAID' // Add PAID to the enum for consistency
+}
 
 export interface TransactionCustomerHistoryAttributes {
   Id: number;
@@ -16,11 +38,14 @@ export interface TransactionCustomerHistoryAttributes {
   virtual_account: string;
   trxId: string;
   timestamp: Date;
+  expired_date: string;
   price: string;
   product_name: string;
   periode: string;
   statusPayment: string; // Assuming enum type is string-based for statusPayment
   transactionType: TypePayment;
+  invoice_id: string; // New column
+  purchase_type: purchase_types; // New column
   createdAt: Date;
   updatedAt: Date;
 }
@@ -42,12 +67,15 @@ class TransactionCustomerHistory
   public user_id!: number;
   public virtual_account!: string;
   public trxId!: string;
+  public expired_date!: string;
   public timestamp!: Date;
   public price!: string;
   public product_name!: string;
   public periode!: string;
   public statusPayment!: string;
   public transactionType!: TypePayment;
+  public invoice_id!: string; // New column
+  public purchase_type!: purchase_types; // New column
   public createdAt!: Date;
   public updatedAt!: Date;
 }
@@ -69,6 +97,10 @@ TransactionCustomerHistory.init(
       allowNull: false
     },
     trxId: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    expired_date: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -99,8 +131,20 @@ TransactionCustomerHistory.init(
         'QRIS',
         'PAYLATER',
         'CREDIT_CARD',
-        'DEBIT_CARD'
+        'DEBIT_CARD',
+        'POINT'
       ),
+      allowNull: false
+    },
+    invoice_id: {
+      // New field
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
+    },
+    purchase_type: {
+      // New field
+      type: DataTypes.ENUM('MEMBERSHIP', 'TOPUP'),
       allowNull: false
     },
     createdAt: {

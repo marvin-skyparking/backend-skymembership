@@ -4,8 +4,12 @@ import {
   handleFindMemberById,
   handleFindMemberByUsernameOrEmail,
   handleUpdateMember,
-  handleDeleteMember
+  handleDeleteMember,
+  getMemberVehicle,
+  getMemberVehicleDetails,
+  updateRfidMember
 } from '../controllers/member_customer.controller';
+import { validateUserToken } from '../middleware/auth.middleware';
 
 const member_customer = express.Router();
 
@@ -17,5 +21,11 @@ member_customer.get(
 );
 member_customer.put('/members/:id', handleUpdateMember);
 member_customer.delete('/members/:id', handleDeleteMember);
-
+member_customer.get('/members-vehicle/', validateUserToken, getMemberVehicle);
+member_customer.get(
+  '/members-vehicle/:id',
+  validateUserToken,
+  getMemberVehicleDetails
+);
+member_customer.post('/update-rfid/', validateUserToken, updateRfidMember);
 export default member_customer;

@@ -89,3 +89,53 @@ export async function findUserByIdOrEmail(
   });
   return user;
 }
+
+export async function updateMemberPoints(user_id: number, points: number) {
+  // Find the member by user_id
+  const member = await MemberCustomer.findOne({
+    where: { id: user_id }
+  });
+
+  if (!member) {
+    throw new Error('Member not found');
+  }
+
+  // Calculate the new total points by adding the new points to the existing points
+  const updatedPoints = (member.points || 0) + points;
+
+  // Update the member's points
+  await MemberCustomer.update(
+    { points: updatedPoints }, // Set the new total points
+    {
+      where: { id: user_id }
+    }
+  );
+
+  // Return the updated member
+  return findMemberById(user_id);
+}
+
+// Service to deduct points from a user
+export async function deductPoints(
+  userId: number,
+  pointsToDeduct: number
+): Promise<boolean> {
+  const user = await findMemberById(userId);
+
+  if (!user || user.points == null) {
+    throw new Error('User not found or points not available');
+  }
+
+  // Check if user has enough points
+  if (user.points < pointsToDeduct) {
+    throw new Error('Insufficient points');
+  }
+
+  // Deduct points
+  user.points -= pointsToDeduct;
+
+  // Save updated points
+  const updatedUser = await user.save();
+
+  return !!updatedUser;
+}

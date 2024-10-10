@@ -1,12 +1,13 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../configs/database'; // Adjust the path
 
-interface CustomerMembershipDetailAttributes {
-  id: number;
-  member_customer_no: string;
-  tenant_id: string;
-  rfid: string;
+export interface CustomerMembershipDetailAttributes {
+  id?: number;
+  Cust_Member: number;
+  // tenant_id: string;
+  rfid?: string;
   location_id: string;
+  invoice_id: string;
   kid: string;
   is_active: boolean;
   is_used: boolean;
@@ -16,14 +17,30 @@ interface CustomerMembershipDetailAttributes {
   updated_at: Date;
 }
 
+export interface CustomerMembershipDetailCreation {
+  Cust_Member: number;
+  // tenant_id: string;
+  rfid?: string;
+  location_id: string;
+  invoice_id: string;
+  kid: string;
+  is_active?: boolean;
+  is_used?: boolean;
+  start_date: Date;
+  end_date: Date;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
 export class CustomerMembershipDetail
   extends Model<CustomerMembershipDetailAttributes>
   implements CustomerMembershipDetailAttributes
 {
   public id!: number;
-  public member_customer_no!: string;
+  public Cust_Member!: number;
   public tenant_id!: string;
   public rfid!: string;
+  public invoice_id!: string;
   public location_id!: string;
   public kid!: string;
   public is_active!: boolean;
@@ -42,19 +59,23 @@ CustomerMembershipDetail.init(
       primaryKey: true,
       allowNull: false
     },
-    member_customer_no: {
-      type: DataTypes.STRING,
+    Cust_Member: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'customer_membership', key: 'member_customer_no' } // Foreign Key Reference
+      references: { model: 'customer_membership', key: 'id' } // Foreign Key Reference
     },
-    tenant_id: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      references: { model: 'admin_users', key: 'tenant_id' } // Foreign Key Reference
-    },
-    rfid: {
+    invoice_id: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    // tenant_id: {
+    //   type: DataTypes.STRING,
+    //   allowNull: true,
+    //   references: { model: 'admin_users', key: 'tenant_id' } // Foreign Key Reference
+    // },
+    rfid: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     location_id: {
       type: DataTypes.STRING,
@@ -67,7 +88,7 @@ CustomerMembershipDetail.init(
     is_active: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: true
+      defaultValue: false
     },
     is_used: {
       type: DataTypes.BOOLEAN,

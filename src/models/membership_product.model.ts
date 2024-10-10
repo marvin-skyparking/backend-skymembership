@@ -7,6 +7,7 @@ interface MembershipProductAttributes {
   id: number; // Primary key
   product_code: string;
   product_name: string;
+  KID: string;
   vehicle_type: string; // Type of vehicle
   location_code: string; // Foreign key reference to LocationArea
   card_activation_fee: number; // Activation fee
@@ -36,6 +37,7 @@ export class MembershipProduct
   public id!: number; // Primary key
   public product_code!: string;
   public product_name!: string;
+  public KID!: string;
   public vehicle_type!: string; // Type of vehicle
   public location_code!: string; // Foreign key reference to LocationArea
   public card_activation_fee!: number; // Activation fee
@@ -62,6 +64,10 @@ MembershipProduct.init(
       allowNull: false
     },
     product_name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    KID: {
       type: DataTypes.STRING,
       allowNull: false
     },

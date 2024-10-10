@@ -5,19 +5,19 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './configs/swagger';
 import cors from 'cors';
 
-// Kalau sudah Online
-
-// const corsOptions = {
-//   origin: 'http://example.com', // Replace with your allowed origin
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   allowedHeaders: ['Content-Type', 'Authorization']
-// };
-
 // Initialize express app
 const app = express().disable('x-powered-by');
 
+// CORS options to allow requests from localhost:9000
+const corsOptions = {
+  origin: 'http://localhost:9001', // Replace with your allowed origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions)); // Use the defined CORS options
 app.use(express.json());
-app.use(cors());
+
 // Initialize Swagger
 const enableSwagger = process.env.ENABLE_SWAGGER === 'true';
 

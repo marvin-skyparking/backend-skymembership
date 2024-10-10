@@ -22,7 +22,7 @@ if (EnvConfig.NODE_ENV === 'development') {
   EnvConfig.SENTRY_URI = EnvConfig.SENTRY_URI ?? '';
   EnvConfig.SENTRY_ENABLE = EnvConfig.SENTRY_ENABLE ?? false;
   EnvConfig.JWT_SECRET = EnvConfig.JWT_SECRET ?? 'skyparking';
-  EnvConfig.BAYARIND_DEV_URL =
-    EnvConfig.BAYARIND_DEV_URL ?? 'https://snaptest.bayarind.id';
+  EnvConfig.BAYARIND_DEV_URL ?? 'https://snaptest.bayarind.id';
+  EnvConfig.PAYMENT_SERVICE_URL ?? 'http://localhost:9000';
 }
 export default EnvConfig;
