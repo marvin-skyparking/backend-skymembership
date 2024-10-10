@@ -5,7 +5,6 @@ export interface CustomerMembershipDetailAttributes {
   id?: number;
   Cust_Member: number;
   // tenant_id: string;
-  rfid?: string;
   location_id: string;
   invoice_id: string;
   kid: string;
@@ -20,7 +19,6 @@ export interface CustomerMembershipDetailAttributes {
 export interface CustomerMembershipDetailCreation {
   Cust_Member: number;
   // tenant_id: string;
-  rfid?: string;
   location_id: string;
   invoice_id: string;
   kid: string;
@@ -39,7 +37,6 @@ export class CustomerMembershipDetail
   public id!: number;
   public Cust_Member!: number;
   public tenant_id!: string;
-  public rfid!: string;
   public invoice_id!: string;
   public location_id!: string;
   public kid!: string;
@@ -73,10 +70,6 @@ CustomerMembershipDetail.init(
     //   allowNull: true,
     //   references: { model: 'admin_users', key: 'tenant_id' } // Foreign Key Reference
     // },
-    rfid: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
     location_id: {
       type: DataTypes.STRING,
       allowNull: false
