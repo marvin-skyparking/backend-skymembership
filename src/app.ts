@@ -11,7 +11,8 @@ const app = express().disable('x-powered-by');
 // CORS options to allow requests from localhost:9000
 const allowedOrigins = [
   'http://localhost:9001',
-  'https://apipaymentservice.skyparking.online'
+  'https://apipaymentservice.skyparking.online',
+  '*'
 ];
 
 const corsOptions = {
