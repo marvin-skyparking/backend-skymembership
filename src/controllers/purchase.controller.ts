@@ -354,6 +354,7 @@ export async function Register_Vehicle(req: Request, res: Response) {
     const create_membership: CustomerMembershipCreation = {
       cust_id: user.id,
       vehicle_type: vehicle_type,
+      rfid: '',
       member_customer_no: card_identifier,
       plate_number: plate_number,
       plate_number_image: plate_number_image,

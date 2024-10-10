@@ -60,7 +60,8 @@ CustomerMembership.init(
     },
     rfid: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
+      unique: true
     },
     vehicle_type: {
       type: DataTypes.ENUM('MOTOR', 'MOBIL')
