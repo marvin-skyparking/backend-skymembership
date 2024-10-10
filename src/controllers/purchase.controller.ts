@@ -119,7 +119,6 @@ export async function Purchase_product_By_Points(req: Request, res: Response) {
     const add_invoice = `INV/MEMBERSHIP/${generateRandomNumber(10)}`;
     const membership_detail_creation = await upsertMembershipDetail({
       Cust_Member: get_vehicle_member.id,
-      rfid: '',
       location_id: check_product.location_code,
       invoice_id: add_invoice,
       kid: check_product.KID,
@@ -225,7 +224,6 @@ export async function Purchase_product(req: Request, res: Response) {
     const add_invoice = 'INV/MEMBERSHIP/' + generateRandomNumber(10);
     const create_membership_detail: CustomerMembershipDetailCreation = {
       Cust_Member: get_vehicle_member.id,
-      rfid: '',
       location_id: check_product.location_code,
       invoice_id: add_invoice,
       kid: check_product.KID,

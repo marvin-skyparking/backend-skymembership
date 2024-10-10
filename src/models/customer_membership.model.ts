@@ -9,6 +9,7 @@ export enum VehicleType {
 export interface CustomerMembershipAttributes {
   id?: number;
   cust_id: number;
+  rfid?: string;
   vehicle_type: VehicleType;
   member_customer_no: string;
   plate_number: string;
@@ -21,6 +22,7 @@ export interface CustomerMembershipAttributes {
 export interface CustomerMembershipCreation {
   cust_id: number;
   vehicle_type: VehicleType;
+  rfid?: string;
   member_customer_no: string;
   plate_number: string;
   plate_number_image: string;
@@ -33,6 +35,7 @@ export class CustomerMembership
 {
   public id!: number;
   public cust_id!: number;
+  public rfid!: string;
   public vehicle_type!: VehicleType;
   public member_customer_no!: string;
   public plate_number!: string;
@@ -54,6 +57,10 @@ CustomerMembership.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: { model: 'member_customer', key: 'id' } // Foreign Key Reference
+    },
+    rfid: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     vehicle_type: {
       type: DataTypes.ENUM('MOTOR', 'MOBIL')

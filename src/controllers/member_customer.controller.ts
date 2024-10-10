@@ -18,11 +18,7 @@ import {
   getMembershipVehicleByCustId,
   getMembershipVehicleDetailById
 } from '../services/customer_membership.service';
-import {
-  getAllMembershipDetailById,
-  getCustomerMembershipByRFID,
-  updateAllMembershipRFIDByCustId
-} from '../services/customer_membership_details.service';
+import { getAllMembershipDetailById } from '../services/customer_membership_details.service';
 
 // Register  member
 export async function handleCreateMember(req: Request, res: Response) {
@@ -192,22 +188,6 @@ export async function updateRfidMember(req: Request, res: Response) {
     }
 
     const validate_vehicle = await getAllMembershipDetailById(cust_id);
-
-    if (
-      validate_vehicle?.rfid != RFID_Number &&
-      customer_member.plate_number != plate_number
-    ) {
-      return BadRequest(res, 'RFID Already Used By Another Vehicle');
-    }
-
-    const updateRfid = await updateAllMembershipRFIDByCustId(
-      cust_id,
-      RFID_Number
-    );
-
-    if (!updateRfid) {
-      return BadRequest(res, 'Error updating RFID for the customer.');
-    }
 
     return OK(res, 'RFID updated successfully.', validate_vehicle);
   } catch (error: any) {
