@@ -21,8 +21,8 @@ export interface CustomerMembershipAttributes {
 
 export interface CustomerMembershipCreation {
   cust_id: number;
-  vehicle_type: VehicleType;
   rfid?: string;
+  vehicle_type: VehicleType;
   member_customer_no: string;
   plate_number: string;
   plate_number_image: string;
