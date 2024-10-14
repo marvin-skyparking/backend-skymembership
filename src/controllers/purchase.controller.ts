@@ -271,13 +271,21 @@ export async function Purchase_product(req: Request, res: Response) {
 
     const result = response.data;
 
+    console.log(result);
+
     const transaction_history = {
       user_id: user.id,
-      virtual_account: result.data.virtualAccountData.virtualAccountNo.trim(),
-      trxId: result.data.virtualAccountData.trxId,
+      virtual_account:
+        result.paymentData.virtualAccountData.virtualAccountNo?.trim() ||
+        result.paymentData.virtualAccountData.virtual_account_number.trim(),
+      trxId:
+        result.paymentData.virtualAccountData?.trxId ||
+        result.paymentData.virtualAccountData.trx_id,
       expired_date: formattedExpiredDate,
       timestamp: new Date(),
-      price: result.data.virtualAccountData.totalAmount.value,
+      price:
+        result.paymentData.virtualAccountData.totalAmount?.value ||
+        result.paymentData.virtualAccountData.paid_amount,
       product_name: check_product.product_name,
       periode: `${check_product.start_date} To ${check_product.end_date}`,
       invoice_id: payment_data.Invoice,
@@ -287,7 +295,9 @@ export async function Purchase_product(req: Request, res: Response) {
     };
 
     // Create transaction history in the database
-    const transaction_data = await createTransaction(transaction_history);
+    const transaction_data = await createTransaction({
+      ...transaction_history // Correctly trim and assign
+    });
 
     return OK(res, 'Successfully Created Transaction', transaction_data);
   } catch (error: any) {

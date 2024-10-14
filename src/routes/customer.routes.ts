@@ -7,7 +7,8 @@ import {
   handleDeleteMember,
   getMemberVehicle,
   getMemberVehicleDetails,
-  updateRfidMember
+  updateRfidMember,
+  GetCustomerMemberList
 } from '../controllers/member_customer.controller';
 import { validateUserToken } from '../middleware/auth.middleware';
 
@@ -28,4 +29,9 @@ member_customer.get(
   getMemberVehicleDetails
 );
 member_customer.post('/update-rfid/', validateUserToken, updateRfidMember);
+member_customer.get(
+  '/get-membership',
+  validateUserToken,
+  GetCustomerMemberList
+);
 export default member_customer;

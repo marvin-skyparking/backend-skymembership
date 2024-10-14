@@ -14,9 +14,11 @@ import {
   ServerError
 } from '../utils/response/common.response';
 import {
+  getCustomerAllMembershipById,
   getCustomerMembershipByPlateNumber,
   getMembershipVehicleByCustId,
-  getMembershipVehicleDetailById
+  getMembershipVehicleDetailById,
+  updateRfidByPlateNumber
 } from '../services/customer_membership.service';
 import { getAllMembershipDetailById } from '../services/customer_membership_details.service';
 
@@ -187,7 +189,10 @@ export async function updateRfidMember(req: Request, res: Response) {
       return BadRequest(res, 'Invalid Customer Identifier');
     }
 
-    const validate_vehicle = await getAllMembershipDetailById(cust_id);
+    const validate_vehicle = await updateRfidByPlateNumber(
+      plate_number,
+      RFID_Number
+    );
 
     return OK(res, 'RFID updated successfully.', validate_vehicle);
   } catch (error: any) {
@@ -198,5 +203,72 @@ export async function updateRfidMember(req: Request, res: Response) {
       'An error occurred while updating the RFID.',
       error
     );
+  }
+}
+
+export async function GetCustomerMemberList(req: Request, res: Response) {
+  try {
+    const user = req.user?.id; // Ensure req.user is valid and has an id
+
+    //Validate User First
+    if (!user) {
+      return NotFound(res, 'Invalid token or user not found.');
+    }
+
+    const user_data = await findMemberById(user.id);
+
+    if (!user_data) {
+      return NotFound(res, 'Invalid token or user not found.');
+    }
+
+    const data_membership = await getCustomerAllMembershipById(user);
+
+    // Use res.status() and res.json() directly if helpers are problematic
+    return res.status(200).json({
+      message: 'Success Retrieve Data',
+      data: data_membership
+    });
+  } catch (error: any) {
+    console.error('Error in GetCustomerMemberList:', error);
+
+    return res.status(500).json({
+      message: 'An error occurred while retrieving data',
+      error: error.message
+    });
+  }
+}
+
+export async function GetCustomerMemberListDetails(
+  req: Request,
+  res: Response
+) {
+  try {
+    const user = req.user?.id; // Ensure req.user is valid and has an id
+    const id = req.params.id;
+    //Validate User First
+    if (!user) {
+      return NotFound(res, 'Invalid token or user not found.');
+    }
+
+    const user_data = await findMemberById(user.id);
+
+    if (!user_data) {
+      return NotFound(res, 'Invalid token or user not found.');
+    }
+
+    const data_membership = await getCustomerAllMembershipById(user);
+
+    // Use res.status() and res.json() directly if helpers are problematic
+    return res.status(200).json({
+      message: 'Success Retrieve Data',
+      data: data_membership
+    });
+  } catch (error: any) {
+    console.error('Error in GetCustomerMemberList:', error);
+
+    return res.status(500).json({
+      message: 'An error occurred while retrieving data',
+      error: error.message
+    });
   }
 }
