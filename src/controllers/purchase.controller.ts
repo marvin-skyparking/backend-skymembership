@@ -451,11 +451,17 @@ export async function TOP_UP(req: Request, res: Response) {
 
     const transaction_history = {
       user_id: user.id,
-      virtual_account: result.data.virtualAccountData.virtualAccountNo.trim(),
-      trxId: result.data.virtualAccountData.trxId,
+      virtual_account:
+        result.paymentData.virtualAccountData.virtualAccountNo?.trim() ||
+        result.paymentData.virtualAccountData.virtual_account_number.trim(),
+      trxId:
+        result.paymentData.virtualAccountData?.trxId ||
+        result.paymentData.virtualAccountData.trx_id,
       expired_date: formattedExpiredDate,
       timestamp: new Date(),
-      price: result.data.virtualAccountData.totalAmount.value,
+      price:
+        result.paymentData.virtualAccountData.totalAmount?.value ||
+        result.paymentData.virtualAccountData.paid_amount,
       product_name: 'TOP UP',
       periode: '',
       invoice_id: payment_data.Invoice,
