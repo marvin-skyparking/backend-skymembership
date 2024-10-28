@@ -1,0 +1,37 @@
+name: Deploy to Development
+
+on:
+  push:
+    branches:
+      - development  # Triggers on pushes to the development branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout the latest code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Step 2: Set up SSH for deployment
+    - name: Set up SSH for deployment
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    # Step 3: Deploy Docker Compose app
+    - name: Deploy Docker Compose app
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          # Step 3.1: Navigate to the project directory
+          cd /var/www/backend-membership/backend-skymembership  # Replace with the path to your project
+          
+          # Step 3.3: Rebuild and restart the Docker container
+          docker-compose down -v
+
+          # Step 3.2: Pull the latest changes from GitHub (development branch)
+          git pull origin development
+
+          docker-compose up --build -d
+        EOF
