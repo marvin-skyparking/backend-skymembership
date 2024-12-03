@@ -4,6 +4,7 @@ import sequelize from '../configs/database'; // Adjust the path
 export interface CustomerMembershipDetailAttributes {
   id?: number;
   Cust_Member: number;
+  member_customer_no: string;
   // tenant_id: string;
   location_id: string;
   invoice_id: string;
@@ -18,6 +19,7 @@ export interface CustomerMembershipDetailAttributes {
 
 export interface CustomerMembershipDetailCreation {
   Cust_Member: number;
+  member_customer_no: string;
   // tenant_id: string;
   location_id: string;
   invoice_id: string;
@@ -36,6 +38,7 @@ export class CustomerMembershipDetail
 {
   public id!: number;
   public Cust_Member!: number;
+  public member_customer_no!: string;
   public tenant_id!: string;
   public invoice_id!: string;
   public location_id!: string;
@@ -60,6 +63,10 @@ CustomerMembershipDetail.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: { model: 'customer_membership', key: 'id' } // Foreign Key Reference
+    },
+    member_customer_no: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     },
     invoice_id: {
       type: DataTypes.STRING,

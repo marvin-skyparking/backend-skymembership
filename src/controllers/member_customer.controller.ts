@@ -16,6 +16,7 @@ import {
 import {
   getCustomerAllMembershipById,
   getCustomerMembershipByPlateNumber,
+  getMembershipsByCustomerNo,
   getMembershipVehicleByCustId,
   getMembershipVehicleDetailById,
   updateRfidByPlateNumber
@@ -126,7 +127,22 @@ export async function getMemberVehicle(req: Request, res: Response) {
 
     const data_vehicle = await getMembershipVehicleByCustId(Number(user.id));
 
-    return OK(res, 'Success Retreive Member Vehicle', data_vehicle);
+    if (!data_vehicle) {
+      return NotFound(res, 'No Vehicle Found');
+    }
+
+    const responseData = data_vehicle.map((vehicle) => ({
+      id: vehicle.id,
+      cust_id: vehicle.cust_id,
+      rfid: vehicle.rfid,
+      vehicle_type: vehicle.vehicle_type,
+      member_customer_no: vehicle.member_customer_no,
+      plate_number: vehicle.plate_number,
+      plate_number_image: vehicle.plate_number_image,
+      stnk_image: vehicle.stnk_image
+    }));
+
+    return OK(res, 'Success Retreive Member Vehicle', responseData);
   } catch (error: any) {
     return ServerError(req, res, error);
   }
@@ -148,8 +164,36 @@ export async function getMemberVehicleDetails(req: Request, res: Response) {
     }
 
     const data_vehicle = await getMembershipVehicleDetailById(Number(id));
+    if (!data_vehicle) {
+      return NotFound(res, 'Data Vehicle Not Found');
+    }
+    const list_membership = await getMembershipsByCustomerNo(
+      data_vehicle.member_customer_no
+    );
 
-    return OK(res, 'Success Retreive Member Vehicle', data_vehicle);
+    if (!list_membership) {
+      return NotFound(res, 'Data Vehicle Not Found');
+    }
+
+    const responseData = {
+      rfid: data_vehicle.rfid,
+      vehicle_type: data_vehicle.vehicle_type,
+      member_customer_no: data_vehicle.member_customer_no,
+      plate_number: data_vehicle.plate_number,
+      plate_number_image: data_vehicle.plate_number_image,
+      stnk_image: data_vehicle.stnk_image,
+      membership: list_membership.map((membership) => ({
+        member_customer_no: membership.member_customer_no,
+        location_id: membership.location_id,
+        kid: membership.kid,
+        is_active: membership.is_active,
+        is_used: membership.is_used,
+        start_date: membership.start_date,
+        end_date: membership.end_date
+      }))
+    };
+
+    return OK(res, 'Success Retreive Member Vehicle', responseData);
   } catch (error: any) {
     return ServerError(req, res, error);
   }
@@ -206,46 +250,6 @@ export async function updateRfidMember(req: Request, res: Response) {
       'An error occurred while updating the RFID.',
       error
     );
-  }
-}
-
-export async function GetCustomerMemberList(req: Request, res: Response) {
-  try {
-    const user = req.user;
-
-    //Validate User First
-    if (!user) {
-      return NotFound(res, 'Invalid token or user not found.');
-    }
-
-    const user_data = await findMemberById(user.id);
-
-    if (!user_data) {
-      return NotFound(res, 'Invalid token or user not found.');
-    }
-
-    const data_membership = await getCustomerAllMembershipById(user.id);
-
-    if (!data_membership) {
-      return NotFound(res, 'Membership not found.');
-    }
-
-    const ids = data_membership.map((item) => item.id);
-
-    const data = await getMembershipDetailsByIds(ids);
-
-    // Use res.status() and res.json() directly if helpers are problematic
-    return res.status(200).json({
-      message: 'Success Retrieve Data',
-      data: data
-    });
-  } catch (error: any) {
-    console.error('Error in GetCustomerMemberList:', error);
-
-    return res.status(500).json({
-      message: 'An error occurred while retrieving data',
-      error: error.message
-    });
   }
 }
 

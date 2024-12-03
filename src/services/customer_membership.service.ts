@@ -37,10 +37,15 @@ export async function getCustomerMembershipById(
 export async function getCustomerAllMembershipById(
   membershipId: number
 ): Promise<CustomerMembership[] | null> {
-  const membership = await CustomerMembership.findAll({
-    where: { cust_id: membershipId }
-  });
-  return membership;
+  try {
+    const membership = await CustomerMembership.findAll({
+      where: { cust_id: membershipId }
+    });
+
+    return membership;
+  } catch (error) {
+    throw new Error('Failed to Fetch Membership');
+  }
 }
 
 // Update a customer membership by ID
@@ -91,6 +96,23 @@ export async function getMembershipVehicleDetailById(
 ): Promise<CustomerMembership | null> {
   const membershipDetail = await CustomerMembership.findByPk(id); // Directly pass the id
   return membershipDetail;
+}
+
+//Get List Membership
+export async function getMembershipsByCustomerNo(
+  member_customer_no: string
+): Promise<CustomerMembershipDetail[] | null> {
+  try {
+    // Fetch all memberships based on member_customer_no
+    const membershipDetails = await CustomerMembershipDetail.findAll({
+      where: { member_customer_no } // Filtering by member_customer_no
+    });
+
+    return membershipDetails;
+  } catch (error: any) {
+    console.error('Error retrieving memberships:', error);
+    throw new Error(error.message);
+  }
 }
 
 // Update customer membership by plate_number to update rfid
