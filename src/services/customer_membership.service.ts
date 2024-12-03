@@ -129,3 +129,39 @@ export async function getCustomerMembershipsWithDetails(
 
   return { membership, details: membershipDetail };
 }
+
+export async function getMembershipDetailsById(memberId: number) {
+  try {
+    // Fetching the customer membership along with its associated details
+    const membership = await CustomerMembership.findOne({
+      where: { id: memberId },
+      include: [
+        {
+          model: CustomerMembershipDetail,
+          as: 'details', // Alias used in the association (hasMany)
+          attributes: [
+            'id',
+            'location_id',
+            'invoice_id',
+            'is_active',
+            'start_date',
+            'end_date',
+            'created_at',
+            'updated_at'
+          ]
+        }
+      ]
+    });
+
+    // If membership is not found, return null
+    if (!membership) {
+      return null;
+    }
+
+    // Return the membership with its associated details
+    return membership;
+  } catch (error) {
+    console.error('Error fetching membership details:', error);
+    throw new Error('Unable to fetch membership details');
+  }
+}

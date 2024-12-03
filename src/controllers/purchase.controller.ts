@@ -254,7 +254,9 @@ export async function Purchase_product(req: Request, res: Response) {
       virtualAccountName: user_data.fullname,
       virtualAccountEmail: user_data.email,
       ExpiredDate: formattedExpiredDate,
-      totalAmount: check_product.price.toString(),
+      totalAmount: (
+        check_product.price + response_bank.data.admin_fee
+      ).toString(),
       AppModule: 'APP_MEMBERSHIP',
       Invoice: add_invoice,
       Payment_using: response_bank.data.type_payment
@@ -431,7 +433,7 @@ export async function TOP_UP(req: Request, res: Response) {
       virtualAccountName: user_data.fullname,
       virtualAccountEmail: user_data.email,
       ExpiredDate: formattedExpiredDate,
-      totalAmount: amount.toString(),
+      totalAmount: (amount + response_bank.data.admin_fee).toString(),
       AppModule: 'APP_MEMBERSHIP',
       Invoice: 'INV/MEMBERSHIP/' + generateRandomNumber(10),
       Payment_using: response_bank.data.type_payment
