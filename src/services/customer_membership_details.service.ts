@@ -3,6 +3,7 @@ import {
   CustomerMembershipDetailAttributes,
   CustomerMembershipDetailCreation
 } from '../models/customer_membership_detail.model'; // Adjust the import path as necessary
+import { Op } from 'sequelize';
 
 // Create a new customer membership detail
 export async function upsertMembershipDetail(
@@ -70,6 +71,25 @@ export async function getMembershipDetailById(
     where: { id: membershipDetailId }
   });
   return membershipDetail;
+}
+
+export async function getMembershipDetailsByIds(
+  ids: number[] // Expecting an array of numbers
+): Promise<CustomerMembershipDetail[]> {
+  try {
+    const membershipDetails = await CustomerMembershipDetail.findAll({
+      where: {
+        id: {
+          [Op.in]: ids // Use Op.in to query multiple IDs
+        }
+      }
+    });
+
+    return membershipDetails;
+  } catch (error) {
+    console.error('Error retrieving membership details:', error);
+    return [];
+  }
 }
 
 // Update a customer membership detail by ID

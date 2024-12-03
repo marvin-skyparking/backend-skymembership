@@ -20,7 +20,10 @@ import {
   getMembershipVehicleDetailById,
   updateRfidByPlateNumber
 } from '../services/customer_membership.service';
-import { getAllMembershipDetailById } from '../services/customer_membership_details.service';
+import {
+  getAllMembershipDetailById,
+  getMembershipDetailsByIds
+} from '../services/customer_membership_details.service';
 
 // Register  member
 export async function handleCreateMember(req: Request, res: Response) {
@@ -208,7 +211,7 @@ export async function updateRfidMember(req: Request, res: Response) {
 
 export async function GetCustomerMemberList(req: Request, res: Response) {
   try {
-    const user = req.user?.id; // Ensure req.user is valid and has an id
+    const user = req.user;
 
     //Validate User First
     if (!user) {
@@ -221,12 +224,20 @@ export async function GetCustomerMemberList(req: Request, res: Response) {
       return NotFound(res, 'Invalid token or user not found.');
     }
 
-    const data_membership = await getCustomerAllMembershipById(user);
+    const data_membership = await getCustomerAllMembershipById(user.id);
+
+    if (!data_membership) {
+      return NotFound(res, 'Membership not found.');
+    }
+
+    const ids = data_membership.map((item) => item.id);
+
+    const data = await getMembershipDetailsByIds(ids);
 
     // Use res.status() and res.json() directly if helpers are problematic
     return res.status(200).json({
       message: 'Success Retrieve Data',
-      data: data_membership
+      data: data
     });
   } catch (error: any) {
     console.error('Error in GetCustomerMemberList:', error);
