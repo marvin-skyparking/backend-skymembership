@@ -5,7 +5,8 @@ import {
   findMemberByUsernameOrEmail,
   updateMember,
   deleteMember,
-  findExistingUser
+  findExistingUser,
+  userDetail
 } from '../services/member_customer.service';
 import {
   BadRequest,
@@ -21,10 +22,50 @@ import {
   getMembershipVehicleDetailById,
   updateRfidByPlateNumber
 } from '../services/customer_membership.service';
-import {
-  getAllMembershipDetailById,
-  getMembershipDetailsByIds
-} from '../services/customer_membership_details.service';
+// import {
+//   getAllMembershipDetailById,
+//   getMembershipDetailsByIds
+// } from '../services/customer_membership_details.service';
+
+export async function getUserDetailController(
+  req: Request,
+  res: Response
+): Promise<any> {
+  try {
+    const user = req.user;
+
+    if (!user || !user.id) {
+      return res
+        .status(404)
+        .json({ message: 'Invalid token or user not found.' });
+    }
+
+    const userId = user.id; // Extract user ID from the `user` object
+
+    const userDetails = await userDetail(userId);
+
+    const data_details = {
+      fullName: userDetails.fullName,
+      email: userDetails.email,
+      phone_number: userDetails.phone_number,
+      points: userDetails.points,
+      reward_points: userDetails.reward_points
+    };
+
+    res.status(200).json({
+      message: 'Success Retrieve User',
+      data_details
+    });
+  } catch (error: any) {
+    console.error('Error fetching user details:', error);
+
+    if (error.message === 'User not found') {
+      res.status(404).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+}
 
 // Register  member
 export async function handleCreateMember(req: Request, res: Response) {

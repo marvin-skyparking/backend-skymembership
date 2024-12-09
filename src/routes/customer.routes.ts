@@ -7,12 +7,14 @@ import {
   handleDeleteMember,
   getMemberVehicle,
   getMemberVehicleDetails,
-  updateRfidMember
+  updateRfidMember,
+  getUserDetailController
 } from '../controllers/member_customer.controller';
 import { validateUserToken } from '../middleware/auth.middleware';
 
 const member_customer = express.Router();
 
+member_customer.get('/members', validateUserToken, getUserDetailController);
 member_customer.post('/members', handleCreateMember);
 member_customer.get('/members/:id', handleFindMemberById);
 member_customer.get(

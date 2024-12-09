@@ -139,3 +139,13 @@ export async function deductPoints(
 
   return !!updatedUser;
 }
+
+export async function userDetail(userId: number): Promise<any> {
+  const user = await findMemberById(userId);
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  return user;
+}
