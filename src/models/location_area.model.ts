@@ -7,6 +7,8 @@ interface LocationAreaAttributes {
   id: number;
   location_code: string;
   location_name: string;
+  address: Text;
+  coordinate: string;
   KID: string;
   Create_by: number;
   Update_by: number;
@@ -27,6 +29,8 @@ export class LocationArea
   public id!: number;
   public location_code!: string;
   public location_name!: string;
+  public address!: Text;
+  public coordinate!: string;
   public KID!: string;
   public Create_by!: number;
   public Update_by!: number;
@@ -49,6 +53,14 @@ LocationArea.init(
     },
     location_name: {
       type: DataTypes.STRING,
+      allowNull: false
+    },
+    address: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    coordinate: {
+      type: DataTypes.JSON,
       allowNull: false
     },
     KID: {

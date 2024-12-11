@@ -14,6 +14,7 @@ const allowedOrigins = [
   'http://localhost:9001',
   'http://localhost:9002',
   'https://apipaymentservice.skyparking.online',
+  'https://dev-membership.skyparking.online',
   '*'
 ];
 
