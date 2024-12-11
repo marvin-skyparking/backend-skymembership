@@ -18,17 +18,17 @@ const allowedOrigins = [
 ];
 
 const corsOptions = {
-  origin: (
-    origin: string | undefined,
-    callback: (error: Error | null, success?: boolean) => void
-  ) => {
-    // Check if the origin is in the allowed origins list or if it's undefined (for non-browser requests)
-    if (allowedOrigins.indexOf(origin!) !== -1 || !origin) {
-      callback(null, true); // Allow the request
-    } else {
-      callback(new Error('Not allowed by CORS')); // Deny the request
-    }
-  },
+  // origin: (
+  //   origin: string | undefined,
+  //   callback: (error: Error | null, success?: boolean) => void
+  // ) => {
+  //   // Check if the origin is in the allowed origins list or if it's undefined (for non-browser requests)
+  //   if (allowedOrigins.indexOf(origin!) !== -1 || !origin) {
+  //     callback(null, true); // Allow the request
+  //   } else {
+  //     callback(new Error('Not allowed by CORS')); // Deny the request
+  //   }
+  // },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
   // Removed allowedHeaders
