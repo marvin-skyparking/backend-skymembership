@@ -31,7 +31,8 @@ const corsOptions = {
   //   }
   // },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  credentials: true,
+  allowedOrigins
   // Removed allowedHeaders
 };
 
