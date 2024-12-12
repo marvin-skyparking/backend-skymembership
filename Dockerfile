@@ -1,16 +1,16 @@
-# Use the official Node.js image as the base image
-FROM node:20.11
+# Use a smaller base image for Node.js
+FROM node:20.11-alpine
 
 # Create and set the working directory for the application
 WORKDIR /app
 
-# Copy package.json and package-lock.json (or yarn.lock) to the container
+# Copy only package.json and yarn.lock to leverage Docker cache
 COPY package*.json ./
 
-# Install application dependencies
-RUN yarn install
+# Install application dependencies without dev dependencies
+RUN yarn install --production
 
-# Copy the rest of the application source code
+# Copy only the necessary files for production
 COPY . .
 
 # Build the TypeScript code
