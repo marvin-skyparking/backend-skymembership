@@ -1,16 +1,16 @@
-# Use a smaller base image for Node.js
+# Use the official Node.js image as the base image
 FROM node:20.11
 
 # Create and set the working directory for the application
 WORKDIR /app
 
-# Copy only package.json and yarn.lock to leverage Docker cache
+# Copy package.json and package-lock.json (or yarn.lock) to the container
 COPY package*.json ./
 
-# Install application dependencies without dev dependencies
-RUN yarn install --production
+# Install application dependencies
+RUN yarn install
 
-# Copy only the necessary files for production
+# Copy the rest of the application source code
 COPY . .
 
 # Build the TypeScript code
@@ -21,3 +21,4 @@ EXPOSE 9000
 
 # Specify the command to run the application
 CMD ["yarn", "start"]
+ 
