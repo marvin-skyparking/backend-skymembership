@@ -9,14 +9,15 @@ import cors from 'cors';
 const app = express().disable('x-powered-by');
 
 // CORS options to allow requests from localhost:9000
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:9001',
-  'http://localhost:9002',
-  'https://apipaymentservice.skyparking.online',
-  'https://dev-membership.skyparking.online',
-  'https://apiintegration.skyparking.online'
-];
+const allowedOrigins = '*'; // Allow requests from any origin
+// const allowedOrigins = [
+//   'http://localhost:3000',
+//   'http://localhost:9001',
+//   'http://localhost:9002',
+//   'https://apipaymentservice.skyparking.online',
+//   'https://dev-membership.skyparking.online',
+//   'https://apiintegration.skyparking.online'
+// ];
 
 const corsOptions = {
   // origin: (
