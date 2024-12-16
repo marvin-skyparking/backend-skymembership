@@ -10,28 +10,41 @@ export async function upsertMembershipDetail(
   membershipDetailData: CustomerMembershipDetailCreation
 ): Promise<CustomerMembershipDetail | null> {
   try {
-    // Use Sequelize's built-in upsert functionality
-    const [result, created] = await CustomerMembershipDetail.upsert({
-      ...membershipDetailData,
-      is_active: membershipDetailData.is_active ?? false, // Default to false if undefined
-      is_used: membershipDetailData.is_used ?? false, // Default to false if undefined
-      created_at: membershipDetailData.created_at ?? new Date(),
-      updated_at: new Date()
+    // Step 1: Check if membership detail already exists by some unique identifier
+    const existingMembershipDetail = await CustomerMembershipDetail.findOne({
+      where: {
+        Cust_Member: membershipDetailData.Cust_Member,
+        location_id: membershipDetailData.location_id
+      }
     });
 
-    // `upsert` returns an array: [result, created] where `created` is a boolean indicating whether a new record was created
-    if (created) {
-      console.log('New membership detail created:', result);
-    } else {
-      console.log('Existing membership detail updated:', result);
-    }
+    if (existingMembershipDetail) {
+      // Step 2: If it exists, update the record
+      await existingMembershipDetail.update({
+        ...membershipDetailData,
+        updated_at: new Date()
+      });
 
-    return result;
+      return existingMembershipDetail;
+    } else {
+      // Step 3: If it doesn't exist, create a new record
+      const newMembershipDetail = await CustomerMembershipDetail.create({
+        ...membershipDetailData,
+        kid: membershipDetailData.kid,
+        is_active: membershipDetailData.is_active ?? false, // Default to false if undefined
+        is_used: membershipDetailData.is_used ?? false, // Default to false if undefined
+        created_at: new Date(),
+        updated_at: new Date()
+      });
+
+      return newMembershipDetail;
+    }
   } catch (error) {
     console.error('Error upserting membership detail:', error);
     return null;
   }
 }
+
 // Retrieve all customer membership details
 export async function getAllMembershipDetails(): Promise<
   CustomerMembershipDetail[]
