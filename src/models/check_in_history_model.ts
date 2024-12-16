@@ -13,6 +13,8 @@ export interface CheckInHistoryAttributes {
   gate_in_time?: Date;
   checkout_time?: Date;
   gate_out_time?: Date;
+  is_close?: Boolean;
+  is_released?: Boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -38,6 +40,8 @@ class CheckInHistory
   public gate_in_time?: Date;
   public checkout_time?: Date;
   public gate_out_time?: Date;
+  public is_close?: Boolean;
+  public is_released?: Boolean;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -88,6 +92,16 @@ CheckInHistory.init(
     gate_out_time: {
       type: DataTypes.DATE,
       allowNull: true
+    },
+    is_close: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: null
+    },
+    is_released: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: null
     }
   },
   {
