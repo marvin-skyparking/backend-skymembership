@@ -5,11 +5,9 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './configs/swagger';
 import cors from 'cors';
 
-// Initialize express app
 const app = express().disable('x-powered-by');
 
-// CORS options to allow requests from localhost:9000
-
+// Define allowed origins
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:9001',
@@ -19,32 +17,30 @@ const allowedOrigins = [
   'https://apiintegration.skyparking.online'
 ];
 
+// CORS configuration
 const corsOptions = {
-  // origin: (
-  //   origin: string | undefined,
-  //   callback: (error: Error | null, success?: boolean) => void
-  // ) => {
-  //   // Check if the origin is in the allowed origins list or if it's undefined (for non-browser requests)
-  //   if (allowedOrigins.indexOf(origin!) !== -1 || !origin) {
-  //     callback(null, true); // Allow the request
-  //   } else {
-  //     callback(new Error('Not allowed by CORS')); // Deny the request
-  //   }
-  // },
+  origin: (
+    origin: string | undefined,
+    callback: (err: Error | null, success?: boolean) => void
+  ) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      // Allow requests from allowed origins or non-browser requests
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true,
-  allowedOrigins
-  // Removed allowedHeaders
+  credentials: true // Enable cookies and authentication headers
 };
 
-app.use(cors(corsOptions)); // Use the defined CORS options
+app.use(cors(corsOptions));
 app.use(express.json());
 
-// Initialize Swagger
+// Initialize Swagger if enabled
 const enableSwagger = process.env.ENABLE_SWAGGER === 'true';
 
 if (enableSwagger) {
-  // Serve Swagger API documentation
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 }
 
@@ -52,7 +48,7 @@ if (enableSwagger) {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// User routes (Example)
+// User routes
 app.use('/v1', indexRoutes);
 
 export default app;
