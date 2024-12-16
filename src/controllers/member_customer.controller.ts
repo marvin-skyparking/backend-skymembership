@@ -22,6 +22,11 @@ import {
   getMembershipVehicleDetailById,
   updateRfidByPlateNumber
 } from '../services/customer_membership.service';
+import {
+  getMasterCardByNoCard,
+  updateMasterCard,
+  updateMasterCardIsUsed
+} from '../services/master_card.service';
 // import {
 //   getAllMembershipDetailById,
 //   getMembershipDetailsByIds
@@ -275,6 +280,22 @@ export async function updateRfidMember(req: Request, res: Response) {
 
     if (!cust_id) {
       return BadRequest(res, 'Invalid Customer Identifier');
+    }
+
+    const check_card = await getMasterCardByNoCard(RFID_Number);
+
+    if (!check_card) {
+      return BadRequest(res, 'Card Not Registered On Sky Parking');
+    }
+
+    if (check_card && check_card.is_used === true) {
+      return BadRequest(res, 'Card is already Registered');
+    }
+
+    const update_master_card = await updateMasterCardIsUsed(RFID_Number);
+
+    if (!update_master_card) {
+      return BadRequest(res, 'Failed to update Master Card');
     }
 
     const validate_vehicle = await updateRfidByPlateNumber(
