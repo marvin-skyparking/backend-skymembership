@@ -237,9 +237,9 @@ export async function Purchase_product(req: Request, res: Response) {
     const membership_detail_creation = await upsertMembershipDetail(
       create_membership_detail
     );
-    if (!membership_detail_creation) {
-      return ServerError(req, res, 'Error Registering Member Detail.');
-    }
+    // if (!membership_detail_creation) {
+    //   return ServerError(req, res, 'Error Registering Member Detail.');
+    // }
 
     // Expiration Transaction
     const expiredDate = new Date();
