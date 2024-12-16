@@ -62,7 +62,7 @@ CustomerMembership.init(
     },
     is_used: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     rfid: {
       type: DataTypes.STRING,
