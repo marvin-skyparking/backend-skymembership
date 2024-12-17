@@ -485,7 +485,7 @@ export async function TOP_UP(req: Request, res: Response) {
     return res.status(200).json({
       message: 'Successfully Created Transaction',
       data: {
-        ...transaction_data, // Spread the existing transaction data
+        transaction_data, // Spread the existing transaction data
         admin_fee: response_bank.data.admin_fee // Add admin_fee to the response
       }
     });
