@@ -482,13 +482,13 @@ export async function TOP_UP(req: Request, res: Response) {
 
     // Create transaction history in the database
     const transaction_data = await createTransaction(transaction_history);
-
-    return OK(
-      res,
-      'Successfully Created Transaction',
-      transaction_data,
-      response_bank.data.admin_fee
-    );
+    return res.status(200).json({
+      message: 'Successfully Created Transaction',
+      data: {
+        ...transaction_data, // Spread the existing transaction data
+        admin_fee: response_bank.data.admin_fee // Add admin_fee to the response
+      }
+    });
   } catch (error: any) {
     console.error('Error during top-up:', error);
     return ServerError(req, res, 'Error initiating payment.', error.message);
