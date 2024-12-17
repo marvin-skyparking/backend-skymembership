@@ -472,8 +472,6 @@ export async function TOP_UP(req: Request, res: Response) {
             Number(result.paymentData.virtualAccountData.paid_amount) -
             Number(response_bank.data.admin_fee)
           ).toString(),
-
-      admin_fee: response_bank.data.admin_fee,
       product_name: 'TOP UP',
       periode: '',
       invoice_id: payment_data.Invoice,
@@ -485,7 +483,12 @@ export async function TOP_UP(req: Request, res: Response) {
     // Create transaction history in the database
     const transaction_data = await createTransaction(transaction_history);
 
-    return OK(res, 'Successfully Created Transaction', transaction_data);
+    return OK(
+      res,
+      'Successfully Created Transaction',
+      transaction_data,
+      response_bank.data.admin_fee
+    );
   } catch (error: any) {
     console.error('Error during top-up:', error);
     return ServerError(req, res, 'Error initiating payment.', error.message);
