@@ -465,10 +465,10 @@ export async function TOP_UP(req: Request, res: Response) {
       timestamp: new Date(),
 
       price: (
-        result.paymentData.virtualAccountData.amount?.value -
-          response_bank.data.admin_fee ||
-        result.paymentData.virtualAccountData.amount -
-          response_bank.data.admin_fee
+        Number(result.paymentData.virtualAccountData.amount?.value) -
+          Number(response_bank.data.admin_fee) ||
+        Number(result.paymentData.virtualAccountData.amount) -
+          Number(response_bank.data.admin_fee)
       ).toString(),
       product_name: 'TOP UP',
       periode: '',
