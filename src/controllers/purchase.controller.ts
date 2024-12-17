@@ -464,8 +464,8 @@ export async function TOP_UP(req: Request, res: Response) {
       expired_date: formattedExpiredDate,
       timestamp: new Date(),
       price:
-        result.paymentData.virtualAccountData.price?.value ||
-        result.paymentData.virtualAccountData.price,
+        result.paymentData.virtualAccountData.amount?.value ||
+        result.paymentData.virtualAccountData.amount,
       product_name: 'TOP UP',
       periode: '',
       invoice_id: payment_data.Invoice,
