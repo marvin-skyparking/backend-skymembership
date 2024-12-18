@@ -1,0 +1,20 @@
+name: Reset Expired Payments (API Trigger)
+
+on:
+  schedule:
+    # Run daily at midnight UTC
+    - cron: "0 0 * * *"
+
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  reset-expired-payments:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Trigger the API
+      - name: Trigger API to reset expired payments
+        run: |
+          curl --location --request POST 'https://apimembershipservice.skyparking.online/v1/productPurchase/reset-payment' \
+          -H "Content-Type: application/json" \
+          -d '{}'

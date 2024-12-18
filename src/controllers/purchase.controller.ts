@@ -21,6 +21,7 @@ import {
   generateRandomNumberFromPlate
 } from '../utils/helper.utils';
 import {
+  changePaymentFailedExpired,
   createTransaction,
   getTransactionByInvoiceId,
   updateTransactionByTrxId
@@ -531,5 +532,23 @@ export async function Receive_Payment_Product(req: Request, res: Response) {
     }
   } catch (error: any) {
     return ServerError(req, res, 'Error processing payment.', error.message);
+  }
+}
+
+export async function updateFailedTransactionsController(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    await changePaymentFailedExpired();
+    return res.status(200).json({
+      message: 'Expired transactions successfully updated to Failed.'
+    });
+  } catch (error: any) {
+    console.error('Error updating transactions:', error);
+    return res.status(500).json({
+      message: 'An error occurred while updating transactions.',
+      error: error.message
+    });
   }
 }
