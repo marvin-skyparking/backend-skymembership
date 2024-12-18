@@ -483,7 +483,7 @@ export async function TOP_UP(req: Request, res: Response) {
     // Create transaction history in the database
     const transaction_data = await createTransaction(transaction_history);
     return res.status(200).json({
-      status: 'true',
+      status: true,
       message: 'Successfully Created Transaction',
       data: {
         transaction_data, // Spread the existing transaction data
