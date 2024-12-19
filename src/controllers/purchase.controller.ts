@@ -43,6 +43,7 @@ import {
   updateMembershipDetailByUserId
 } from '../services/customer_membership_details.service';
 import { removeUploadedFiles } from '../middleware/multer';
+import { DateTimes } from '../utils/date.utils';
 
 export async function Purchase_product_By_Points(req: Request, res: Response) {
   try {
@@ -495,8 +496,7 @@ export async function TOP_UP(req: Request, res: Response) {
       message: 'Successfully Created Transaction',
       data: {
         transaction_data, // Spread the existing transaction data
-        admin_fee: response_bank.data.admin_fee, // Add admin_fee to the response
-        date: Date.now()
+        admin_fee: response_bank.data.admin_fee // Add admin_fee to the response
       }
     });
   } catch (error: any) {
