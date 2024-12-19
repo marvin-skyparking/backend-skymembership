@@ -288,9 +288,15 @@ export async function Purchase_product(req: Request, res: Response) {
         result.paymentData.virtualAccountData.trx_id,
       expired_date: formattedExpiredDate,
       timestamp: new Date(),
-      price:
-        result.paymentData.virtualAccountData.totalAmount?.value ||
-        result.paymentData.virtualAccountData.paid_amount,
+      price: result.paymentData.virtualAccountData.totalAmount?.value
+        ? (
+            Number(result.paymentData.virtualAccountData.totalAmount.value) -
+            Number(response_bank.data.admin_fee)
+          ).toString()
+        : (
+            Number(result.paymentData.virtualAccountData.paid_amount) -
+            Number(response_bank.data.admin_fee)
+          ).toString(),
       product_name: check_product.product_name,
       periode: `${check_product.start_date} To ${check_product.end_date}`,
       invoice_id: payment_data.Invoice,
