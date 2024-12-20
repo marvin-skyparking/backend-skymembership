@@ -44,6 +44,7 @@ import {
 } from '../services/customer_membership_details.service';
 import { removeUploadedFiles } from '../middleware/multer';
 import { DateTimes } from '../utils/date.utils';
+import { getLocationAreaByCode } from '../services/location_area.service';
 
 export async function Purchase_product_By_Points(req: Request, res: Response) {
   try {
@@ -133,6 +134,10 @@ export async function Purchase_product_By_Points(req: Request, res: Response) {
     if (!membership_detail_creation)
       return ServerError(req, res, 'Error Registering Member Detail.');
 
+    const location_name = await getLocationAreaByCode(
+      check_product.location_code
+    );
+
     // Create Transaction History
     const transaction_data = await createTransaction({
       user_id: user.id,
@@ -146,7 +151,9 @@ export async function Purchase_product_By_Points(req: Request, res: Response) {
       invoice_id: add_invoice,
       statusPayment: 'PAID',
       transactionType: Type_Payment.POINT,
-      purchase_type: purchase_types.MEMBERSHIP
+      purchase_type: purchase_types.MEMBERSHIP,
+      location_code: check_product.location_code,
+      location_name: location_name?.location_name
     });
 
     // Activate Membership
@@ -277,6 +284,10 @@ export async function Purchase_product(req: Request, res: Response) {
 
     const result = response.data;
 
+    const location_name = await getLocationAreaByCode(
+      check_product.location_code
+    );
+
     console.log(result);
 
     const transaction_history = {
@@ -303,7 +314,9 @@ export async function Purchase_product(req: Request, res: Response) {
       invoice_id: payment_data.Invoice,
       statusPayment: 'PENDING',
       transactionType: response_bank.data.type_payment,
-      purchase_type: purchase_types.MEMBERSHIP
+      purchase_type: purchase_types.MEMBERSHIP,
+      location_code: check_product.location_code,
+      location_name: location_name?.location_name
     };
 
     // Create transaction history in the database
