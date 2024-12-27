@@ -4,7 +4,7 @@ import { MasterCard } from '../models/master_card_model';
  * Create a new MasterCard record.
  * @param data - Data for the new MasterCard
  */
-export async function createMasterCard(data: MasterCard): Promise<MasterCard> {
+export async function createMasterCard(data: MasterCard): Promise<any> {
   try {
     const newCard = await MasterCard.create(data);
     return newCard;

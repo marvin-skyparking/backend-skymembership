@@ -58,25 +58,28 @@ export async function validateUserToken(
   req: Request,
   res: Response,
   next: NextFunction
-) {
+): Promise<void> {
   try {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-      return ServerError(req, res, 'Authorization token missing.');
+      ServerError(req, res, 'Authorization token missing.');
+      return; // Stop further execution
     }
 
     const user = await jwtUtils.validateToken(token);
 
     if (!user) {
-      return ServerError(req, res, 'Invalid token or user not found.');
+      ServerError(req, res, 'Invalid token or user not found.');
+      return; // Stop further execution
     }
 
     req.user = user; // Attach the user object to the request
 
-    next();
+    next(); // Pass control to the next middleware
   } catch (err) {
-    return ServerError(req, res, 'Token validation failed.');
+    ServerError(req, res, 'Token validation failed.');
+    return; // Stop further execution
   }
 }

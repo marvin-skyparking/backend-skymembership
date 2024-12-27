@@ -46,7 +46,10 @@ import { removeUploadedFiles } from '../middleware/multer';
 import { DateTimes } from '../utils/date.utils';
 import { getLocationAreaByCode } from '../services/location_area.service';
 
-export async function Purchase_product_By_Points(req: Request, res: Response) {
+export async function Purchase_product_By_Points(
+  req: Request,
+  res: Response
+): Promise<any> {
   try {
     const { id: product_id } = req.params;
     const { bank_id, plate_number } = req.body;
@@ -172,7 +175,10 @@ export async function Purchase_product_By_Points(req: Request, res: Response) {
   }
 }
 
-export async function Purchase_product(req: Request, res: Response) {
+export async function Purchase_product(
+  req: Request,
+  res: Response
+): Promise<any> {
   try {
     const product_id = req.params.id;
     const { bank_id, plate_number } = req.body;
@@ -329,7 +335,10 @@ export async function Purchase_product(req: Request, res: Response) {
   }
 }
 
-export async function Register_Vehicle(req: Request, res: Response) {
+export async function Register_Vehicle(
+  req: Request,
+  res: Response
+): Promise<any> {
   try {
     const { vehicle_type, plate_number } = req.body;
     const user = req.user;
@@ -417,7 +426,7 @@ export async function Register_Vehicle(req: Request, res: Response) {
   }
 }
 
-export async function TOP_UP(req: Request, res: Response) {
+export async function TOP_UP(req: Request, res: Response): Promise<any> {
   try {
     // Validate Product First
     const { bank_id, amount } = req.body;
@@ -516,7 +525,10 @@ export async function TOP_UP(req: Request, res: Response) {
   }
 }
 
-export async function Receive_Payment_Product(req: Request, res: Response) {
+export async function Receive_Payment_Product(
+  req: Request,
+  res: Response
+): Promise<any> {
   try {
     const trx_id = req.body.trx_id;
     const status_payment = req.body.status_transaction;
@@ -557,7 +569,7 @@ export async function Receive_Payment_Product(req: Request, res: Response) {
 export async function updateFailedTransactionsController(
   req: Request,
   res: Response
-): Promise<Response> {
+): Promise<any> {
   try {
     await changePaymentFailedExpired();
     return res.status(200).json({

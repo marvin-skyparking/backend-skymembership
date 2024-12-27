@@ -73,7 +73,10 @@ export async function getUserDetailController(
 }
 
 // Register  member
-export async function handleCreateMember(req: Request, res: Response) {
+export async function handleCreateMember(
+  req: Request,
+  res: Response
+): Promise<any> {
   try {
     const email_valid = await findExistingUser(req.body.email);
 
@@ -101,7 +104,10 @@ export async function handleCreateMember(req: Request, res: Response) {
 }
 
 // Read member by ID
-export async function handleFindMemberById(req: Request, res: Response) {
+export async function handleFindMemberById(
+  req: Request,
+  res: Response
+): Promise<any> {
   const { id } = req.params;
   const member = await findMemberById(Number(id));
 
@@ -116,7 +122,7 @@ export async function handleFindMemberById(req: Request, res: Response) {
 export async function handleFindMemberByUsernameOrEmail(
   req: Request,
   res: Response
-) {
+): Promise<any> {
   const { usernameOrEmail } = req.params;
   const member = await findMemberByUsernameOrEmail(usernameOrEmail);
 
@@ -128,7 +134,10 @@ export async function handleFindMemberByUsernameOrEmail(
 }
 
 // Update member
-export async function handleUpdateMember(req: Request, res: Response) {
+export async function handleUpdateMember(
+  req: Request,
+  res: Response
+): Promise<any> {
   const { id } = req.params;
 
   try {
@@ -145,7 +154,10 @@ export async function handleUpdateMember(req: Request, res: Response) {
 }
 
 // Delete member
-export async function handleDeleteMember(req: Request, res: Response) {
+export async function handleDeleteMember(
+  req: Request,
+  res: Response
+): Promise<any> {
   const { id } = req.params;
 
   const deletedCount = await deleteMember(Number(id));
@@ -157,7 +169,10 @@ export async function handleDeleteMember(req: Request, res: Response) {
   res.status(204).send(); // No content
 }
 
-export async function getMemberVehicle(req: Request, res: Response) {
+export async function getMemberVehicle(
+  req: Request,
+  res: Response
+): Promise<any> {
   try {
     const user = req.user;
 
@@ -194,7 +209,10 @@ export async function getMemberVehicle(req: Request, res: Response) {
   }
 }
 
-export async function getMemberVehicleDetails(req: Request, res: Response) {
+export async function getMemberVehicleDetails(
+  req: Request,
+  res: Response
+): Promise<any> {
   try {
     const id = req.params.id;
     const user = req.user;
@@ -245,7 +263,10 @@ export async function getMemberVehicleDetails(req: Request, res: Response) {
   }
 }
 
-export async function updateRfidMember(req: Request, res: Response) {
+export async function updateRfidMember(
+  req: Request,
+  res: Response
+): Promise<any> {
   try {
     const { plate_number, RFID_Number } = req.body;
     const user = req.user;
@@ -318,7 +339,7 @@ export async function updateRfidMember(req: Request, res: Response) {
 export async function GetCustomerMemberListDetails(
   req: Request,
   res: Response
-) {
+): Promise<any> {
   try {
     const user = req.user?.id; // Ensure req.user is valid and has an id
     const id = req.params.id;

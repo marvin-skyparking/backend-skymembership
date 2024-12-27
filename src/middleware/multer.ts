@@ -59,7 +59,8 @@ export function handleFileUploads(
   res: Response,
   next: NextFunction
 ) {
-  upload(req, res, (err) => {
+  // Typecast req to any to bypass the multer issue with the Request type
+  upload(req as any, res, (err: any) => {
     if (err) {
       // Handle Multer error (like invalid file type or upload failure)
       return BadRequest(res, 'Error uploading file', err.message);

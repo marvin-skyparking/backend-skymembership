@@ -13,7 +13,7 @@ import { getLocationAreaByCode } from '../services/location_area.service';
 import { BadRequest } from '../utils/response/common.response';
 
 export const membershipProductController = {
-  async createMembershipProduct(req: Request, res: Response) {
+  async createMembershipProduct(req: Request, res: Response): Promise<any> {
     try {
       const code_location = req.body.location_code;
 
@@ -30,7 +30,7 @@ export const membershipProductController = {
     }
   },
 
-  async getMembershipProduct(req: Request, res: Response) {
+  async getMembershipProduct(req: Request, res: Response): Promise<any> {
     try {
       const membershipProduct = await getMembershipProductById(
         parseInt(req.params.id)
@@ -41,7 +41,7 @@ export const membershipProductController = {
     }
   },
 
-  async updateMembershipProduct(req: Request, res: Response) {
+  async updateMembershipProduct(req: Request, res: Response): Promise<any> {
     try {
       const membershipProduct = await updateMembershipProduct(
         parseInt(req.params.id),
@@ -53,7 +53,7 @@ export const membershipProductController = {
     }
   },
 
-  async deleteMembershipProduct(req: Request, res: Response) {
+  async deleteMembershipProduct(req: Request, res: Response): Promise<any> {
     try {
       const result = await deleteMembershipProduct(parseInt(req.params.id));
       return res.status(200).json(result);
@@ -62,7 +62,7 @@ export const membershipProductController = {
     }
   },
 
-  async getAllMembershipProducts(req: Request, res: Response) {
+  async getAllMembershipProducts(req: Request, res: Response): Promise<any> {
     try {
       const membershipProducts = await getAllMembershipProducts();
       return res.status(200).json(membershipProducts);
@@ -72,7 +72,10 @@ export const membershipProductController = {
   }
 };
 
-export async function getMembershipProduct(req: Request, res: Response) {
+export async function getMembershipProduct(
+  req: Request,
+  res: Response
+): Promise<any> {
   const { location_code, vehicle_type } = req.query;
 
   if (!location_code || !vehicle_type) {
