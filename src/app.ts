@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import indexRoutes from './routes';
-import swaggerUi from 'swagger-ui-express';
-import swaggerSpec from './configs/swagger';
+// import swaggerUi from 'swagger-ui-express';
+// import swaggerSpec from './configs/swagger';
 import cors from 'cors';
 
 const app = express().disable('x-powered-by');
@@ -38,11 +38,11 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Initialize Swagger if enabled
-const enableSwagger = process.env.ENABLE_SWAGGER === 'true';
+// const enableSwagger = process.env.ENABLE_SWAGGER === 'true';
 
-if (enableSwagger) {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-}
+// if (enableSwagger) {
+//   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// }
 
 // Middleware
 app.use(bodyParser.json());

@@ -288,8 +288,6 @@ export async function Purchase_product(req: Request, res: Response) {
       check_product.location_code
     );
 
-    console.log(result);
-
     const transaction_history = {
       user_id: user.id,
       virtual_account:
