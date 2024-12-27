@@ -28,8 +28,8 @@ interface MembershipProductAttributes {
     | '12 Bulan'; // Membership period
   created_at: Date; // Timestamp for record creation
   updated_at: Date; // Timestamp for record updates
-  Create_by: number; // User who created the record
-  Update_by: number; // User who updated the record
+  Create_by: string; // User who created the record
+  Update_by: string; // User who updated the record
 }
 
 export interface MembershipProductCreationAttributes
@@ -59,8 +59,8 @@ export class MembershipProduct
   public periode!: MembershipProductAttributes['periode']; // Membership period
   public created_at!: Date; // Timestamp for record creation
   public updated_at!: Date; // Timestamp for record updates
-  public Create_by!: number; // User who created the record
-  public Update_by!: number; // User who updated the record
+  public Create_by!: string; // User who created the record
+  public Update_by!: string; // User who updated the record
 }
 
 MembershipProduct.init(
@@ -144,11 +144,11 @@ MembershipProduct.init(
       defaultValue: DataTypes.NOW
     },
     Create_by: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false
     },
     Update_by: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false
     }
   },
