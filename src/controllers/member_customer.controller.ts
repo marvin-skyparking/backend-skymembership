@@ -27,6 +27,7 @@ import {
   updateMasterCard,
   updateMasterCardIsUsed
 } from '../services/master_card.service';
+import { getLocationAreaByCode } from '../services/location_area.service';
 // import {
 //   getAllMembershipDetailById,
 //   getMembershipDetailsByIds
@@ -249,6 +250,7 @@ export async function getMemberVehicleDetails(
       membership: list_membership.map((membership) => ({
         member_customer_no: membership.member_customer_no,
         location_id: membership.location_id,
+        location_name: membership.location_name,
         kid: membership.kid,
         is_active: membership.is_active,
         is_used: membership.is_used,

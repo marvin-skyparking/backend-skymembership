@@ -4,6 +4,7 @@ import authRouter from './auth.routes';
 import locationrouter from './location.routes';
 import productRouter from './product.routes';
 import purchaseProduct from './purchase.routes';
+import masterCard from './master_card.routes';
 
 const router = express.Router();
 
@@ -12,5 +13,6 @@ router.use('/auth', authRouter);
 router.use('/location', locationrouter);
 router.use('/product', productRouter);
 router.use('/productPurchase', purchaseProduct);
+router.use('/card', masterCard);
 
 export default router;

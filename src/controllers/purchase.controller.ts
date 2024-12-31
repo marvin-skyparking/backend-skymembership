@@ -121,12 +121,21 @@ export async function Purchase_product_By_Points(
       return BadRequest(res, 'Failed Deduct Point');
     }
 
+    const location_names = await getLocationAreaByCode(
+      check_product.location_code
+    );
+
+    if (!location_names) {
+      return BadRequest(res, 'location Not Found');
+    }
+
     // Create Membership Detail
     const add_invoice = `INV/MEMBERSHIP/${generateRandomNumber(10)}`;
     const membership_detail_creation = await upsertMembershipDetail({
       Cust_Member: get_vehicle_member.id,
       member_customer_no: get_vehicle_member.member_customer_no,
       location_id: check_product.location_code,
+      location_name: location_names.location_name,
       invoice_id: add_invoice,
       kid: check_product.KID,
       is_active: true,
@@ -237,12 +246,21 @@ export async function Purchase_product(
       );
     }
 
+    const location_names = await getLocationAreaByCode(
+      check_product.location_code
+    );
+
+    if (!location_names) {
+      return BadRequest(res, 'location Not Found');
+    }
+
     // Create Membership Detail
     const add_invoice = 'INV/MEMBERSHIP/' + generateRandomNumber(10);
     const create_membership_detail: CustomerMembershipDetailCreation = {
       Cust_Member: get_vehicle_member.id,
       member_customer_no: get_vehicle_member.member_customer_no,
       location_id: check_product.location_code,
+      location_name: location_names.location_name,
       invoice_id: add_invoice,
       kid: check_product.KID,
       start_date: check_product.start_date,
@@ -581,5 +599,173 @@ export async function updateFailedTransactionsController(
       message: 'An error occurred while updating transactions.',
       error: error.message
     });
+  }
+}
+
+export async function Extend_product(
+  req: Request,
+  res: Response
+): Promise<any> {
+  try {
+    const product_id = req.params.id;
+    const { bank_id, plate_number } = req.body;
+
+    // Validate Product
+    const check_product = await getMembershipProductById(Number(product_id));
+    if (!check_product) {
+      return BadRequest(res, 'Product not found');
+    }
+    if (new Date(check_product.end_date) < new Date()) {
+      return BadRequest(res, 'Periode Produk Tersebut Sudah Tidak Berlaku');
+    }
+
+    // Validate Member
+    const user = req.user;
+    if (!user) {
+      return ServerError(req, res, 'Invalid token or user not found.');
+    }
+
+    const user_data = await findMemberById(user.id);
+    if (!user_data) {
+      return ServerError(req, res, 'Invalid token or user not found.');
+    }
+
+    // Check Vehicle Registration
+    const get_vehicle_member =
+      await getCustomerMembershipByPlateNumber(plate_number);
+    if (!get_vehicle_member) {
+      return NotFound(res, 'Vehicle Not Exist');
+    }
+
+    const check_product_existence =
+      await getCustomerMembershipByCustMemberAndLocation(
+        get_vehicle_member.id,
+        check_product.location_code
+      );
+
+    const validate_expired_payment = await getTransactionByInvoiceId(
+      check_product_existence?.invoice_id ?? ''
+    );
+
+    // Validate Expired Payment
+    if (
+      check_product_existence?.is_active === true &&
+      validate_expired_payment?.expired_date &&
+      new Date(validate_expired_payment.expired_date) > new Date()
+    ) {
+      return BadRequest(res, 'Silahkan Lakukan Pembayaran Lebih dahulu');
+    }
+
+    if (
+      check_product_existence?.end_date &&
+      check_product_existence.end_date > check_product.end_date
+    ) {
+      return BadRequest(res, 'Anda Tidak Bisa Beli Produk Bulan Sebelumnya');
+    }
+
+    const location_names = await getLocationAreaByCode(
+      check_product.location_code
+    );
+
+    if (!location_names) {
+      return BadRequest(res, 'location Not Found');
+    }
+
+    // Create Membership Detail
+    const add_invoice = 'INV/MEMBERSHIP/' + generateRandomNumber(10);
+    const create_membership_detail: CustomerMembershipDetailCreation = {
+      Cust_Member: get_vehicle_member.id,
+      member_customer_no: get_vehicle_member.member_customer_no,
+      location_id: check_product.location_code,
+      location_name: location_names.location_name,
+      invoice_id: add_invoice,
+      kid: check_product.KID,
+      start_date: check_product.start_date,
+      end_date: check_product.end_date
+    };
+
+    const membership_detail_creation = await upsertMembershipDetail(
+      create_membership_detail
+    );
+    // if (!membership_detail_creation) {
+    //   return ServerError(req, res, 'Error Registering Member Detail.');
+    // }
+
+    // Expiration Transaction
+    const expiredDate = new Date();
+    expiredDate.setDate(expiredDate.getDate() + 1);
+    const formattedExpiredDate =
+      expiredDate.toISOString().slice(0, 19) + '+07:00';
+
+    // Get Payment Services Data Partner
+    const data_bank = `${EnvConfig.PAYMENT_SERVICE_URL}${Endpoint_BayarIND.get_payment_services_id}${bank_id}`;
+    const response_bank = await axios.get(data_bank);
+
+    const payment_data: VirtualAccountDetails = {
+      customerNo: get_vehicle_member.member_customer_no,
+      virtualAccountName: user_data.fullname,
+      virtualAccountEmail: user_data.email,
+      ExpiredDate: formattedExpiredDate,
+      totalAmount: (
+        check_product.price + response_bank.data.admin_fee
+      ).toString(),
+      AppModule: 'APP_MEMBERSHIP',
+      Invoice: add_invoice,
+      Payment_using: response_bank.data.type_payment
+    };
+
+    // Hit Payment Service And Save Payment
+    const url = `${EnvConfig.PAYMENT_SERVICE_URL}${Endpoint_BayarIND.create_va}${bank_id}`;
+
+    const response = await axios.post(url, payment_data, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const result = response.data;
+
+    const location_name = await getLocationAreaByCode(
+      check_product.location_code
+    );
+
+    const transaction_history = {
+      user_id: user.id,
+      virtual_account:
+        result.paymentData.virtualAccountData.virtualAccountNo?.trim() ||
+        result.paymentData.virtualAccountData.virtual_account_number.trim(),
+      trxId:
+        result.paymentData.virtualAccountData?.trxId ||
+        result.paymentData.virtualAccountData.trx_id,
+      expired_date: formattedExpiredDate,
+      timestamp: new Date(),
+      price: result.paymentData.virtualAccountData.totalAmount?.value
+        ? (
+            Number(result.paymentData.virtualAccountData.totalAmount.value) -
+            Number(response_bank.data.admin_fee)
+          ).toString()
+        : (
+            Number(result.paymentData.virtualAccountData.paid_amount) -
+            Number(response_bank.data.admin_fee)
+          ).toString(),
+      product_name: check_product.product_name,
+      periode: `${check_product.start_date} To ${check_product.end_date}`,
+      invoice_id: payment_data.Invoice,
+      statusPayment: 'PENDING',
+      transactionType: response_bank.data.type_payment,
+      purchase_type: purchase_types.MEMBERSHIP,
+      location_code: check_product.location_code,
+      location_name: location_name?.location_name
+    };
+
+    // Create transaction history in the database
+    const transaction_data = await createTransaction({
+      ...transaction_history // Correctly trim and assign
+    });
+
+    return OK(res, 'Successfully Created Transaction', transaction_data);
+  } catch (error: any) {
+    console.error('Error processing purchase:', error);
+    return ServerError(req, res, 'Error initiating purchase.', error.message);
   }
 }

@@ -7,6 +7,7 @@ export interface CustomerMembershipDetailAttributes {
   member_customer_no: string;
   // tenant_id: string;
   location_id: string;
+  location_name: string;
   invoice_id: string;
   kid: string;
   is_active: boolean;
@@ -22,6 +23,7 @@ export interface CustomerMembershipDetailCreation {
   member_customer_no: string;
   // tenant_id: string;
   location_id: string;
+  location_name: string;
   invoice_id: string;
   kid: string;
   is_active?: boolean;
@@ -42,6 +44,7 @@ export class CustomerMembershipDetail
   public tenant_id!: string;
   public invoice_id!: string;
   public location_id!: string;
+  public location_name!: string;
   public kid!: string;
   public is_active!: boolean;
   public is_used!: boolean;
@@ -78,6 +81,10 @@ CustomerMembershipDetail.init(
     //   references: { model: 'admin_users', key: 'tenant_id' } // Foreign Key Reference
     // },
     location_id: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    location_name: {
       type: DataTypes.STRING,
       allowNull: false
     },
