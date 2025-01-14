@@ -3,7 +3,10 @@ import * as locationAreaService from '../services/location_area.service';
 import { BadRequest } from '../utils/response/common.response';
 
 // Create a new location area
-export async function createLocationArea(req: Request, res: Response) {
+export async function createLocationArea(
+  req: Request,
+  res: Response
+): Promise<any> {
   try {
     const { location_code, KID } = req.body;
 
@@ -32,7 +35,10 @@ export async function createLocationArea(req: Request, res: Response) {
 }
 
 // Get all location areas
-export async function getAllLocationAreas(req: Request, res: Response) {
+export async function getAllLocationAreas(
+  req: Request,
+  res: Response
+): Promise<any> {
   try {
     const locationAreas = await locationAreaService.getAllLocationAreas();
     res.status(200).json(locationAreas);
@@ -42,7 +48,10 @@ export async function getAllLocationAreas(req: Request, res: Response) {
 }
 
 // Get location area by ID
-export async function getLocationAreaById(req: Request, res: Response) {
+export async function getLocationAreaById(
+  req: Request,
+  res: Response
+): Promise<any> {
   const { id } = req.params;
   try {
     const locationArea = await locationAreaService.getLocationAreaById(
@@ -58,7 +67,10 @@ export async function getLocationAreaById(req: Request, res: Response) {
 }
 
 // Update a location area by ID
-export async function updateLocationArea(req: Request, res: Response) {
+export async function updateLocationArea(
+  req: Request,
+  res: Response
+): Promise<any> {
   const { id } = req.params;
   try {
     const updated = await locationAreaService.updateLocationArea(
@@ -75,7 +87,10 @@ export async function updateLocationArea(req: Request, res: Response) {
 }
 
 // Delete a location area by ID
-export async function deleteLocationArea(req: Request, res: Response) {
+export async function deleteLocationArea(
+  req: Request,
+  res: Response
+): Promise<any> {
   const { id } = req.params;
   try {
     const deleted = await locationAreaService.deleteLocationArea(Number(id));
@@ -91,7 +106,7 @@ export async function deleteLocationArea(req: Request, res: Response) {
 export async function getLocationAreaController(
   req: Request,
   res: Response
-): Promise<Response> {
+): Promise<any> {
   try {
     const { location_code } = req.params;
 

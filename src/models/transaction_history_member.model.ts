@@ -46,6 +46,8 @@ export interface TransactionCustomerHistoryAttributes {
   transactionType: TypePayment;
   invoice_id: string; // New column
   purchase_type: purchase_types; // New column
+  location_code?: string;
+  location_name?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -76,6 +78,8 @@ class TransactionCustomerHistory
   public transactionType!: TypePayment;
   public invoice_id!: string; // New column
   public purchase_type!: purchase_types; // New column
+  public location_code?: string | undefined;
+  public location_name?: string | undefined;
   public createdAt!: Date;
   public updatedAt!: Date;
 }
@@ -146,6 +150,14 @@ TransactionCustomerHistory.init(
       // New field
       type: DataTypes.ENUM('MEMBERSHIP', 'TOPUP'),
       allowNull: false
+    },
+    location_code: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    location_name: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     createdAt: {
       type: DataTypes.DATE,

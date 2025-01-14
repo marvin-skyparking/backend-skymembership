@@ -30,6 +30,8 @@ export async function upsertMembershipDetail(
       // Step 3: If it doesn't exist, create a new record
       const newMembershipDetail = await CustomerMembershipDetail.create({
         ...membershipDetailData,
+        member_customer_no: membershipDetailData.member_customer_no,
+        kid: membershipDetailData.kid,
         is_active: membershipDetailData.is_active ?? false, // Default to false if undefined
         is_used: membershipDetailData.is_used ?? false, // Default to false if undefined
         created_at: new Date(),

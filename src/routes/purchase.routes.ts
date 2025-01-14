@@ -4,7 +4,9 @@ import {
   Purchase_product,
   Purchase_product_By_Points,
   Receive_Payment_Product,
-  TOP_UP
+  TOP_UP,
+  updateFailedTransactionsController,
+  Extend_product
 } from '../controllers/purchase.controller';
 import {
   authenticateToken,
@@ -29,7 +31,16 @@ purchaseProduct.post(
   Register_Vehicle
 );
 
+purchaseProduct.post(
+  '/extend-membership/:id',
+  validateUserToken,
+  Extend_product
+);
+
 purchaseProduct.post('/Top_UP', validateUserToken, TOP_UP);
 purchaseProduct.post('/receivePayment', Receive_Payment_Product);
+
+//Reset Transaction
+purchaseProduct.post('/reset-payment', updateFailedTransactionsController);
 
 export default purchaseProduct;

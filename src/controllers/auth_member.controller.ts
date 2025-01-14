@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'; // Make sure to import Request and Response
+import { NextFunction, Request, Response } from 'express'; // Make sure to import Request and Response
 import { ILogin } from '../models/member_customer.model';
 import {
   BadRequest,
@@ -14,7 +14,7 @@ import {
 } from '../services/member_customer.service';
 import { sanitizeResponseUser } from '../utils/validator.utils';
 
-export async function LoginMember(req: Request, res: Response) {
+export async function LoginMember(req: Request, res: Response): Promise<any> {
   try {
     const body = req.body as ILogin;
 
@@ -65,7 +65,11 @@ export async function LoginMember(req: Request, res: Response) {
   }
 }
 
-export const authMiddleware = async (req: Request, res: Response) => {
+export const authMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Extract the token from the Authorization header
 
@@ -88,6 +92,7 @@ export const authMiddleware = async (req: Request, res: Response) => {
 
     // If token is valid and user exists, return success response (instead of next)
     return res.status(200).json({ message: 'Token is valid', user });
+    next();
   } catch (error: any) {
     // Handle any errors during the token validation process
     return res

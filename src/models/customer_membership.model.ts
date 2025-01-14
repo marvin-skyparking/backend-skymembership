@@ -10,6 +10,7 @@ export interface CustomerMembershipAttributes {
   id?: number;
   cust_id: number;
   rfid?: string;
+  is_used?: number;
   vehicle_type: VehicleType;
   member_customer_no: string;
   plate_number: string;
@@ -35,6 +36,7 @@ export class CustomerMembership
 {
   public id!: number;
   public cust_id!: number;
+  public is_used!: number;
   public rfid?: string;
   public vehicle_type!: VehicleType;
   public member_customer_no!: string;
@@ -57,6 +59,11 @@ CustomerMembership.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: { model: 'member_customer', key: 'id' } // Foreign Key Reference
+    },
+    is_used: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     },
     rfid: {
       type: DataTypes.STRING,

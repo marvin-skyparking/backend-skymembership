@@ -2,6 +2,7 @@ import TransactionCustomerHistory, {
   StatusTransaction,
   TransactionCustomerHistoryAttributes
 } from '../models/transaction_history_member.model'; // Adjust the import path as necessary
+import { Op } from 'sequelize';
 
 // Create a new transaction customer history
 export async function createTransaction(
@@ -104,4 +105,28 @@ export async function getTransactionByInvoiceId(
     where: { invoice_id: invoiceId }
   });
   return transaction;
+}
+
+export async function changePaymentFailedExpired(): Promise<void> {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to the start of the day
+
+    // Update transactions where `expired_date` is less than today and status is 'Pending'
+    const [updatedRows] = await TransactionCustomerHistory.update(
+      { statusPayment: StatusTransaction.FAILED }, // Update the status_transaction to 'Failed'
+      {
+        where: {
+          expired_date: {
+            [Op.lt]: today // expired_date is earlier than today
+          },
+          statusPayment: StatusTransaction.PENDING // Only update if status_transaction is 'Pending'
+        }
+      }
+    );
+
+    console.log(`${updatedRows} transactions updated to Failed.`);
+  } catch (error) {
+    console.error('Error updating transactions:', error);
+  }
 }

@@ -21,3 +21,4 @@ EXPOSE 9000
 
 # Specify the command to run the application
 CMD ["yarn", "start"]
+ 
