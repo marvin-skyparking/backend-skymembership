@@ -6,11 +6,11 @@ const sequelize = new Sequelize(
   EnvConfig.USERNAME_DB_DEV,
   EnvConfig.PASSWORD_DB_DEV,
   {
-    host: EnvConfig.HOST_PROD,
+    host: '147.139.137.204',
     dialect: 'mariadb',
     logging: false,
     dialectOptions: {
-      connectTimeout: 60000 // 60 seconds
+      connectTimeout: 100000 // 60 seconds
     },
     pool: {
       max: 5,
