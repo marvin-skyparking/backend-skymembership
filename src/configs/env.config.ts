@@ -24,5 +24,6 @@ if (EnvConfig.NODE_ENV === 'development') {
   EnvConfig.JWT_SECRET = EnvConfig.JWT_SECRET;
   EnvConfig.BAYARIND_DEV_URL = EnvConfig.JWT_SECRET;
   EnvConfig.PAYMENT_SERVICE_URL = EnvConfig.PAYMENT_SERVICE_URL;
+  EnvConfig.HOST_PROD = EnvConfig.HOST_PROD;
 }
 export default EnvConfig;

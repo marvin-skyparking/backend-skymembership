@@ -6,7 +6,7 @@ const sequelize = new Sequelize(
   EnvConfig.USERNAME_DB_DEV,
   EnvConfig.PASSWORD_DB_DEV,
   {
-    host: EnvConfig.DB_DEV,
+    host: EnvConfig.HOST_PROD,
     dialect: 'mariadb',
     logging: false,
     dialectOptions: {
