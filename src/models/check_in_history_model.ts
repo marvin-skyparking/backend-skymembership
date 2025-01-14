@@ -9,6 +9,8 @@ export interface CheckInHistoryAttributes {
   location_code: string;
   status_member: 'MEMBER' | 'NON-MEMBER';
   tariff: number;
+  balance_before?: Number;
+  balance_after?: Number;
   check_in_time?: Date;
   gate_in_time?: Date;
   checkout_time?: Date;
@@ -36,6 +38,8 @@ class CheckInHistory
   public location_code!: string;
   public status_member!: 'MEMBER' | 'NON-MEMBER';
   public tariff!: number;
+  public balance_before?: Number;
+  public balance_after?: Number;
   public check_in_time?: Date;
   public gate_in_time?: Date;
   public checkout_time?: Date;
@@ -76,6 +80,14 @@ CheckInHistory.init(
     tariff: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    balance_after: {
+      type: DataTypes.NUMBER,
+      allowNull: true
+    },
+    balance_before: {
+      type: DataTypes.NUMBER,
+      allowNull: true
     },
     check_in_time: {
       type: DataTypes.DATE,
