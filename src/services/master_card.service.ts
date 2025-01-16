@@ -1,3 +1,7 @@
+import {
+  IPaginatePayload,
+  IPaginateResult
+} from '../interfaces/pagination.interface';
 import { MasterCard } from '../models/master_card_model';
 
 /**
@@ -19,12 +23,31 @@ export async function createMasterCard(no_card: string): Promise<MasterCard> {
 /**
  * Get all MasterCard records.
  */
-export async function getAllMasterCards(): Promise<MasterCard[]> {
+export async function getAllMasterCards(
+  pagination: IPaginatePayload
+): Promise<any> {
   try {
-    return await MasterCard.findAll();
+    const { page = 1, limit = 10 } = pagination;
+
+    // Calculate skip and take
+    const skip = (page - 1) * limit;
+    const take = limit;
+
+    // Fetch data with pagination
+    const { count: totalData, rows: masterCards } =
+      await MasterCard.findAndCountAll({
+        offset: skip,
+        limit: take
+      });
+
+    return {
+      data: masterCards,
+      totalData,
+      totalFiltered: masterCards.length
+    };
   } catch (error) {
-    console.error('Error fetching all MasterCards:', error);
-    throw new Error('Failed to fetch MasterCards');
+    console.error('Error fetching all MasterCards with pagination:', error);
+    throw new Error('Failed to fetch MasterCards with pagination');
   }
 }
 

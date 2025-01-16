@@ -1,3 +1,4 @@
+import { IPaginatePayload } from '../interfaces/pagination.interface';
 import { MasterCard } from '../models/master_card_model';
 import {
   createMasterCard,
@@ -48,11 +49,27 @@ export async function getAllMasterCardsController(
   res: Response
 ): Promise<any> {
   try {
-    const masterCards = await getAllMasterCards();
+    const { page, limit } = req.query;
+
+    // Parse query parameters
+    const pagination: IPaginatePayload = {
+      page: Number(page) || 1,
+      limit: Number(limit) || 10
+    };
+
+    // Get paginated data
+    const paginatedMasterCards = await getAllMasterCards(pagination);
+
     return res.status(200).json({
       status: true,
       message: 'MasterCards retrieved successfully',
-      data: masterCards
+      data: paginatedMasterCards.data,
+      meta: {
+        totalData: paginatedMasterCards.totalData,
+        totalFiltered: paginatedMasterCards.totalFiltered,
+        currentPage: pagination.page,
+        pageSize: pagination.limit
+      }
     });
   } catch (error: any) {
     console.error('Error in getAllMasterCardsController:', error.message);
