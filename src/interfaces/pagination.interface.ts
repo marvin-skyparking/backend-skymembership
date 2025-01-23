@@ -10,7 +10,7 @@ export interface IPaginateSkipTake {
 
 export interface IPaginatePayload {
   page?: number;
-  limit?: number;
+  limit: number;
   search?: string | any;
   isDropdown?: string | boolean | any;
 }

@@ -1,7 +1,8 @@
+import { IPaginatePayload } from '../interfaces/pagination.interface';
 import { MasterCard } from '../models/master_card_model';
 import {
   createMasterCard,
-  getAllMasterCards,
+  getAllMasterCardsWithPagination,
   getMasterCardById
 } from '../services/master_card.service';
 import { Request, Response } from 'express';
@@ -48,11 +49,27 @@ export async function getAllMasterCardsController(
   res: Response
 ): Promise<any> {
   try {
-    const masterCards = await getAllMasterCards();
+    // Extract pagination parameters from query
+    const { page = 1, limit = 10, search } = req.query;
+
+    // Ensure `page` and `limit` are numbers and provide defaults
+    const pagination: IPaginatePayload = {
+      page: req.query.page ? parseInt(req.query.page as string, 10) : 1,
+      limit: req.query.limit ? parseInt(req.query.limit as string, 10) : 10,
+      search: req.query.search || ''
+    };
+
+    const { data, total } = await getAllMasterCardsWithPagination(pagination);
+
     return res.status(200).json({
       status: true,
       message: 'MasterCards retrieved successfully',
-      data: masterCards
+      data,
+      page: {
+        currentPage: pagination.page,
+        totalPages: Math.ceil(total / pagination.limit),
+        totalItems: total
+      }
     });
   } catch (error: any) {
     console.error('Error in getAllMasterCardsController:', error.message);
