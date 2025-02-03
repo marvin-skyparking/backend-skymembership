@@ -1,8 +1,6 @@
-import {
-  IPaginatePayload,
-  IPaginateResult
-} from '../interfaces/pagination.interface';
+import { Op } from 'sequelize';
 import { MasterCard } from '../models/master_card_model';
+import { IPaginatePayload } from '../interfaces/pagination.interface';
 
 /**
  * Create a new MasterCard record.
@@ -23,31 +21,31 @@ export async function createMasterCard(no_card: string): Promise<MasterCard> {
 /**
  * Get all MasterCard records.
  */
-export async function getAllMasterCards(
+export async function getAllMasterCardsWithPagination(
   pagination: IPaginatePayload
-): Promise<any> {
+): Promise<{ data: MasterCard[]; total: number }> {
   try {
-    const { page = 1, limit = 10 } = pagination;
+    const { page = 1, limit = 10, search = '' } = pagination;
 
-    // Calculate skip and take
-    const skip = (page - 1) * limit;
-    const take = limit;
+    // Calculate offset and limit
+    const offset = (page - 1) * limit;
 
-    // Fetch data with pagination
-    const { count: totalData, rows: masterCards } =
-      await MasterCard.findAndCountAll({
-        offset: skip,
-        limit: take
-      });
+    // Add search functionality if `search` is provided
+    const whereCondition = search
+      ? { name: { [Op.iLike]: `%${search}%` } } // Adjust 'name' to match the relevant column in your model
+      : {};
 
-    return {
-      data: masterCards,
-      totalData,
-      totalFiltered: masterCards.length
-    };
+    // Query with pagination and search
+    const { rows: data, count: total } = await MasterCard.findAndCountAll({
+      where: whereCondition,
+      limit,
+      offset
+    });
+
+    return { data, total };
   } catch (error) {
-    console.error('Error fetching all MasterCards with pagination:', error);
-    throw new Error('Failed to fetch MasterCards with pagination');
+    console.error('Error fetching MasterCards with pagination:', error);
+    throw new Error('Failed to fetch MasterCards');
   }
 }
 
