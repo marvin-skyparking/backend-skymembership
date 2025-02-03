@@ -346,7 +346,15 @@ export async function Purchase_product(
       ...transaction_history // Correctly trim and assign
     });
 
-    return OK(res, 'Successfully Created Transaction', transaction_data);
+    return res.status(200).json({
+      status: true,
+      message: 'Successfully Created Transaction',
+      data: {
+        transaction_data, // Spread the existing transaction data
+        admin_fee: response_bank.data.admin_fee // Add admin_fee to the response
+      }
+    });
+    //return OK(res, 'Successfully Created Transaction', transaction_data,  admin_fee: response_bank.data.admin_fee);
   } catch (error: any) {
     console.error('Error processing purchase:', error);
     return ServerError(req, res, 'Error initiating purchase.', error.message);
