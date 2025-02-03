@@ -12,7 +12,7 @@ services:
     environment:
       - PORT=9000
     ports:
-      - "9202:9000"
+      - "9205:9000"
     # command: npm install cookie-parser && npm start
     networks:
       - backend_membership_v2
