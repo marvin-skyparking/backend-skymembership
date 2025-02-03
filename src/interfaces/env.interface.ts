@@ -11,4 +11,5 @@ export interface IEnvInterface {
   JWT_SECRET: string;
   BAYARIND_DEV_URL: string;
   PAYMENT_SERVICE_URL: string;
+  HOST_PROD: string;
 }

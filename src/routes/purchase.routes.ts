@@ -6,7 +6,8 @@ import {
   Receive_Payment_Product,
   TOP_UP,
   updateFailedTransactionsController,
-  Extend_product
+  Extend_product,
+  Extend_product_By_Points
 } from '../controllers/purchase.controller';
 import {
   authenticateToken,
@@ -35,6 +36,12 @@ purchaseProduct.post(
   '/extend-membership/:id',
   validateUserToken,
   Extend_product
+);
+
+purchaseProduct.post(
+  '/extend-membership-point/:id',
+  validateUserToken,
+  Extend_product_By_Points
 );
 
 purchaseProduct.post('/Top_UP', validateUserToken, TOP_UP);
