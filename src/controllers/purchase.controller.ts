@@ -117,10 +117,14 @@ export async function Purchase_product_By_Points(
     if (!deduct_points?.points || deduct_points.points <= check_product.price)
       return BadRequest(res, 'POINT Tidak Cukup');
 
-    if (!(await deductPoints(user.id, check_product.price))) {
-      return BadRequest(res, 'Failed Deduct Point');
+    if (
+      !(await deductPoints(
+        user.id,
+        check_product.price + check_product.card_activation_fee
+      ))
+    ) {
+      return BadRequest(res, 'Failed to deduct points');
     }
-
     const location_names = await getLocationAreaByCode(
       check_product.location_code
     );
@@ -157,7 +161,9 @@ export async function Purchase_product_By_Points(
       trxId: generateRandomNumber(16),
       expired_date: new Date().toString(),
       timestamp: new Date(),
-      price: check_product.price.toString(),
+      price: (
+        Number(check_product.price) + check_product.card_activation_fee
+      ).toString(),
       product_name: check_product.product_name,
       periode: `${check_product.start_date} To ${check_product.end_date}`,
       invoice_id: add_invoice,
@@ -173,7 +179,16 @@ export async function Purchase_product_By_Points(
       return ServerError(req, res, 'Error Update Membership Detail');
     }
 
-    return OK(res, 'Successfully Created Transaction', transaction_data);
+    return res.status(200).json({
+      status: true,
+      message: 'Successfully Created Transaction',
+      data: {
+        transaction_data, // Spread the existing transaction data
+        activation_fee: check_product.card_activation_fee
+      }
+    });
+
+    //return OK(res, 'Successfully Created Transaction', transaction_data);
   } catch (error) {
     console.error('Error processing purchase:', error);
     return ServerError(
@@ -290,7 +305,9 @@ export async function Purchase_product(
       virtualAccountEmail: user_data.email,
       ExpiredDate: formattedExpiredDate,
       totalAmount: (
-        check_product.price + response_bank.data.admin_fee
+        check_product.price +
+        response_bank.data.admin_fee +
+        check_product.card_activation_fee
       ).toString(),
       AppModule: 'APP_MEMBERSHIP',
       Invoice: add_invoice,
@@ -324,11 +341,13 @@ export async function Purchase_product(
       timestamp: new Date(),
       price: result.paymentData.virtualAccountData.totalAmount?.value
         ? (
-            Number(result.paymentData.virtualAccountData.totalAmount.value) -
+            Number(result.paymentData.virtualAccountData.totalAmount.value) +
+            check_product.card_activation_fee -
             Number(response_bank.data.admin_fee)
           ).toString()
         : (
-            Number(result.paymentData.virtualAccountData.paid_amount) -
+            Number(result.paymentData.virtualAccountData.paid_amount) +
+            check_product.card_activation_fee -
             Number(response_bank.data.admin_fee)
           ).toString(),
       product_name: check_product.product_name,
@@ -351,7 +370,8 @@ export async function Purchase_product(
       message: 'Successfully Created Transaction',
       data: {
         transaction_data, // Spread the existing transaction data
-        admin_fee: response_bank.data.admin_fee // Add admin_fee to the response
+        admin_fee: response_bank.data.admin_fee, // Add admin_fee to the response
+        activation_fee: check_product.card_activation_fee
       }
     });
     //return OK(res, 'Successfully Created Transaction', transaction_data,  admin_fee: response_bank.data.admin_fee);
