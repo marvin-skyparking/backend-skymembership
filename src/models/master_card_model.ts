@@ -1,11 +1,22 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../configs/database'; // Adjust the path to your Sequelize instance
 
+export enum CardType {
+  PERSONAL = 'PERSONAL',
+  TENNANT = 'TENNANT',
+  COMPLIMENT = 'COMPLIMENT',
+  NOT_USED = 'NOT_USED'
+}
 // Define the attributes for the MasterCard model
 interface MasterCardAttributes {
   id: string;
   no_card: string;
   is_used: boolean;
+  tennant_code?: string;
+  tennant_name?: string;
+  card_type: 'PERSONAL' | 'TENNANT' | 'COMPLIMENT' | 'NOT_USED';
+  start_date?: Date;
+  end_date?: Date;
   created_at: Date;
   updated_at: Date;
 }
@@ -22,6 +33,11 @@ export class MasterCard
   public id!: string;
   public no_card!: string;
   public is_used!: boolean;
+  public tennant_code?: string;
+  public tennant_name?: string;
+  public card_type!: 'PERSONAL' | 'TENNANT' | 'COMPLIMENT' | 'NOT_USED';
+  public start_date?: Date;
+  public end_date?: Date;
   public created_at!: Date;
   public updated_at!: Date;
 }
@@ -44,6 +60,27 @@ MasterCard.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false
+    },
+    tennant_code: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    tennant_name: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    card_type: {
+      type: DataTypes.ENUM('PERSONAL', 'TENNANT', 'COMPLIMENT', 'NOT_USED'),
+      allowNull: false,
+      defaultValue: 'NOT_USED'
+    },
+    start_date: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    end_date: {
+      type: DataTypes.DATE,
+      allowNull: true
     },
     created_at: {
       type: DataTypes.DATE,

@@ -12,4 +12,8 @@ export interface IEnvInterface {
   BAYARIND_DEV_URL: string;
   PAYMENT_SERVICE_URL: string;
   HOST_PROD: string;
+  EMAIL_USER: string;
+  EMAIL_PASS: string;
+  SMTP_HOST: string;
+  SMTP_PORT: string;
 }

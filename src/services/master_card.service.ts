@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { MasterCard } from '../models/master_card_model';
+import { CardType, MasterCard } from '../models/master_card_model';
 import { IPaginatePayload } from '../interfaces/pagination.interface';
 
 /**
@@ -11,7 +11,11 @@ export async function createMasterCard(no_card: string): Promise<MasterCard> {
     if (!no_card) {
       throw new Error('no_card is a required field.');
     }
-    const newCard = await MasterCard.create({ no_card, is_used: false }); // Set is_used explicitly
+    const newCard = await MasterCard.create({
+      no_card,
+      is_used: false,
+      card_type: CardType.NOT_USED
+    }); // Set is_used explicitly
     return newCard;
   } catch (error: any) {
     console.error('Error creating MasterCard:', error.message);
@@ -124,7 +128,7 @@ export async function updateMasterCardIsUsed(
 ): Promise<[number, MasterCard[]]> {
   try {
     return await MasterCard.update(
-      { is_used: true },
+      { is_used: true, card_type: CardType.PERSONAL },
       {
         where: { no_card },
         returning: true

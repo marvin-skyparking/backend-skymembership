@@ -25,5 +25,10 @@ if (EnvConfig.NODE_ENV === 'development') {
   EnvConfig.BAYARIND_DEV_URL = EnvConfig.JWT_SECRET;
   EnvConfig.PAYMENT_SERVICE_URL = EnvConfig.PAYMENT_SERVICE_URL;
   EnvConfig.HOST_PROD = EnvConfig.HOST_PROD;
+  EnvConfig.EMAIL_USER = EnvConfig.EMAIL_USER;
+  EnvConfig.EMAIL_PASS = EnvConfig.EMAIL_PASS;
+  EnvConfig.SMTP_HOST = EnvConfig.SMTP_HOST;
+  EnvConfig.SMTP_PORT = EnvConfig.SMTP_PORT;
 }
+
 export default EnvConfig;
