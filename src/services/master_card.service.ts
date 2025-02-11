@@ -14,6 +14,7 @@ export async function createMasterCard(no_card: string): Promise<MasterCard> {
     const newCard = await MasterCard.create({
       no_card,
       is_used: false,
+      is_active: false,
       card_type: CardType.NOT_USED
     }); // Set is_used explicitly
     return newCard;
@@ -34,11 +35,25 @@ export async function getAllMasterCardsWithPagination(
     // Calculate offset and limit
     const offset = (page - 1) * limit;
 
+    // Convert 'true'/'false' strings to boolean if applicable
+    const isBooleanSearch =
+      search.toLowerCase() === 'true' || search.toLowerCase() === 'false';
+    const booleanValue = isBooleanSearch
+      ? search.toLowerCase() === 'true'
+      : null;
+
     // Add search functionality if `search` is provided
     const whereCondition = search
-      ? { name: { [Op.iLike]: `%${search}%` } } // Adjust 'name' to match the relevant column in your model
+      ? {
+          [Op.or]: [
+            { no_card: { [Op.like]: `%${search}%` } },
+            { card_type: { [Op.like]: `%${search}%` } },
+            { location_name: { [Op.like]: `%${search}%` } },
+            { location_code: { [Op.like]: `%${search}%` } },
+            ...(isBooleanSearch ? [{ is_used: booleanValue }] : [])
+          ]
+        }
       : {};
-
     // Query with pagination and search
     const { rows: data, count: total } = await MasterCard.findAndCountAll({
       where: whereCondition,
@@ -52,7 +67,6 @@ export async function getAllMasterCardsWithPagination(
     throw new Error('Failed to fetch MasterCards');
   }
 }
-
 /**
  * Get a MasterCard record by its ID.
  * @param id - The ID of the MasterCard

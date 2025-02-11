@@ -1,6 +1,12 @@
 import { Model, DataTypes, Sequelize, Optional } from 'sequelize';
 import sequelize from '../configs/database';
 
+export interface TLogin {
+  username?: string; // Optional username
+  email?: string; // Optional email
+  password: string; // Required password
+}
+
 interface AdminTennantAttributes {
   id: string;
   tennant_code?: string;
@@ -11,7 +17,7 @@ interface AdminTennantAttributes {
   password: string;
   phone_number: string;
   is_active: boolean;
-  active_token?: string;
+  active_token?: string | null;
   expired_active?: Date;
   reset_password_token?: string;
   reset_password_expired?: Date;
@@ -50,7 +56,7 @@ class AdminTennant
   public password!: string;
   public phone_number!: string;
   public is_active!: boolean;
-  public active_token?: string;
+  public active_token!: string | null;
   public expired_active?: Date;
   public reset_password_token?: string;
   public reset_password_expired?: Date;

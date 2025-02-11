@@ -17,6 +17,9 @@ interface MasterCardAttributes {
   card_type: 'PERSONAL' | 'TENNANT' | 'COMPLIMENT' | 'NOT_USED';
   start_date?: Date;
   end_date?: Date;
+  is_active: boolean;
+  location_code?: string;
+  location_name?: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -38,6 +41,9 @@ export class MasterCard
   public card_type!: 'PERSONAL' | 'TENNANT' | 'COMPLIMENT' | 'NOT_USED';
   public start_date?: Date;
   public end_date?: Date;
+  public is_active!: boolean;
+  public location_code?: string;
+  public location_name?: string;
   public created_at!: Date;
   public updated_at!: Date;
 }
@@ -80,6 +86,19 @@ MasterCard.init(
     },
     end_date: {
       type: DataTypes.DATE,
+      allowNull: true
+    },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    location_code: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    location_name: {
+      type: DataTypes.STRING,
       allowNull: true
     },
     created_at: {
